@@ -22,6 +22,19 @@ class Program
         var interval = int.Parse(args[2]);
         var logFilePath = args[3];
 
+        if (!Directory.Exists(sourceDirectory))
+        {
+            DisplayMessage(ConsoleColor.Red, $"Source directory: {sourceDirectory} doesn't exist!");
+            return;
+        }
+        
+        if (!Directory.Exists(replicaDirectory))
+        {
+            DisplayMessage(ConsoleColor.Yellow, $"Replica directory: {replicaDirectory} doesn't exist.");
+            DisplayMessage(ConsoleColor.DarkGray, $"Creating directory at given path: {replicaDirectory} ...");
+
+            // TODO: Create directory
+        }
     }
     
     private static void DisplayHelpMessage()
@@ -44,4 +57,15 @@ class Program
         Console.WriteLine(message);
         Console.ForegroundColor = defaultConsoleColor;
     }
+    
+    // private static void DisplayMessage(string message, ConsoleColor? color = null)
+    // {
+    //     var defaultConsoleColor = Console.ForegroundColor;
+    //     
+    //     if (color is not null)
+    //         Console.ForegroundColor = (ConsoleColor)color;
+    //     
+    //     Console.WriteLine(message);
+    //     Console.ForegroundColor = defaultConsoleColor;
+    // }
 }
