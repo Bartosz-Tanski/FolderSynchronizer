@@ -47,6 +47,8 @@ class Program
             
             if (!File.Exists(targetFilePath))
                 CopyFile(sourceFilePath, targetFilePath);
+            
+            DisplayMessage($"File already exists in {targetFilePath}", ConsoleColor.Green);
         }
 
         foreach (var sourceDirectoryPath in directoriesInSourceDir)
@@ -55,6 +57,9 @@ class Program
 
             if (!Directory.Exists(targetDirPath))
                 CreateMissingDirectories(sourceDirectoryPath, targetDirPath);
+            
+            DisplayMessage($"Directory already exists in {targetDirPath}", ConsoleColor.Green);
+
         }
     }
 
