@@ -59,8 +59,12 @@ class Program
                 CreateMissingDirectories(sourceDirectoryPath, targetDirPath);
             
             DisplayMessage($"Directory already exists in {targetDirPath}", ConsoleColor.Green);
-
         }
+
+        Console.WriteLine();
+        Console.WriteLine();
+        Console.WriteLine();
+        GetDirectories(sourceDirectory);
     }
 
     private static void DisplayHelpMessage()
@@ -96,5 +100,17 @@ class Program
     {
         DisplayMessage($"Copying: {sourcePath} to {targetPath}", ConsoleColor.DarkGray);
         Directory.CreateDirectory(targetPath);
+    }
+
+    private static void GetDirectories(string path)
+    {
+        foreach (var dir in Directory.GetDirectories(path))
+        {
+            if (Directory.Exists(dir))
+            {
+                GetDirectories(dir);
+                Console.WriteLine("Current dir:" + dir);
+            }
+        }
     }
 }
