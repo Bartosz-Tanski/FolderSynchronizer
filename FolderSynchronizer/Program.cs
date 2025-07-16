@@ -19,7 +19,7 @@ class Program
             DisplayHelpMessage();
             return;
         }
-        
+
         if (!Directory.Exists(args[0]))
         {
             DisplayMessage($"Source directory: {args[0]} doesn't exist!", ConsoleColor.Red);
@@ -32,12 +32,13 @@ class Program
         var logFilePath = args[3];
 
         var cancellationToken = new CancellationTokenSource();
-        
+
         Console.CancelKeyPress += (s, e) =>
         {
+            e.Cancel = true; // The default is false, which terminates the current process preventing displaying message
             cancellationToken.Cancel();
         };
-        
+
         var timer = new Timer(_ =>
             {
                 try
@@ -52,7 +53,7 @@ class Program
             state: null,
             dueTime: 0, // Synchronizing starts immediately
             period: interval * 1000); // Synchronize each <Interval> seconds
-        
+
         cancellationToken.Token
             .WaitHandle
             .WaitOne();
@@ -86,7 +87,7 @@ class Program
 
         CreateDirectories(sourceDirectory, replicaDirectory);
 
-        Console.WriteLine("Synchronization tick");
+        Console.WriteLine("Press CTRL + C to stop synchronization...");
     }
 
 
@@ -139,7 +140,7 @@ class Program
                 foreach (var innerSourceFile in innerSourceFiles)
                 {
                     var combinedTargetPathForFile = Path.Combine(combinedTargetPath, Path.GetFileName(innerSourceFile));
-                    
+
                     if (!File.Exists(combinedTargetPathForFile))
                     {
                         CopyFile(innerSourceFile, combinedTargetPathForFile);
