@@ -52,9 +52,7 @@ class Program
 
         CreateDirectories(sourceDirectory, replicaDirectory);
 
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine();
+        // TODO: Add creating files after creating directory in CreateDirectories method.
     }
 
     private static void DisplayHelpMessage()
