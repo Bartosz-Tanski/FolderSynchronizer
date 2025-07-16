@@ -12,7 +12,7 @@ class Program
 
         if (!int.TryParse(args[2], out _))
         {
-            DisplayMessage(ConsoleColor.Red, $"<Interval> argument: {args[2]} is in wrong format!");
+            DisplayMessage($"<Interval> argument: {args[2]} is in wrong format!", ConsoleColor.Red);
             DisplayHelpMessage();
             return;
         }
@@ -24,14 +24,14 @@ class Program
 
         if (!Directory.Exists(sourceDirectory))
         {
-            DisplayMessage(ConsoleColor.Red, $"Source directory: {sourceDirectory} doesn't exist!");
+            DisplayMessage($"Source directory: {sourceDirectory} doesn't exist!", ConsoleColor.Red);
             return;
         }
         
         if (!Directory.Exists(replicaDirectory))
         {
-            DisplayMessage(ConsoleColor.Yellow, $"Replica directory: {replicaDirectory} doesn't exist.");
-            DisplayMessage(ConsoleColor.DarkGray, $"Creating directory at given path: {replicaDirectory} ...");
+            DisplayMessage($"Replica directory: {replicaDirectory} doesn't exist.", ConsoleColor.Yellow);
+            DisplayMessage($"Creating directory at given path: {replicaDirectory} ...", ConsoleColor.DarkGray);
 
             // TODO: Create directory
         }
@@ -49,23 +49,15 @@ class Program
         Console.WriteLine();
     }
     
-    private static void DisplayMessage(ConsoleColor color, string message)
+    
+    private static void DisplayMessage(string message, ConsoleColor? color = null)
     {
         var defaultConsoleColor = Console.ForegroundColor;
-
-        Console.ForegroundColor = color;
+        
+        if (color is not null)
+            Console.ForegroundColor = (ConsoleColor)color;
+        
         Console.WriteLine(message);
         Console.ForegroundColor = defaultConsoleColor;
     }
-    
-    // private static void DisplayMessage(string message, ConsoleColor? color = null)
-    // {
-    //     var defaultConsoleColor = Console.ForegroundColor;
-    //     
-    //     if (color is not null)
-    //         Console.ForegroundColor = (ConsoleColor)color;
-    //     
-    //     Console.WriteLine(message);
-    //     Console.ForegroundColor = defaultConsoleColor;
-    // }
 }
