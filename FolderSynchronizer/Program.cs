@@ -44,11 +44,11 @@ class Program
         foreach (var sourceFilePath in filesInSourceDir)
         {
             var targetFilePath = Path.Combine(replicaDirectory, Path.GetFileName(sourceFilePath));
-            
+
             if (!File.Exists(targetFilePath))
                 CopyFile(sourceFilePath, targetFilePath);
-            
-            DisplayMessage($"File already exists in {targetFilePath}", ConsoleColor.Green);
+
+            // DisplayMessage($"File already exists in {targetFilePath}", ConsoleColor.Green);
         }
 
         foreach (var sourceDirectoryPath in directoriesInSourceDir)
@@ -57,8 +57,8 @@ class Program
 
             if (!Directory.Exists(targetDirPath))
                 CreateMissingDirectories(sourceDirectoryPath, targetDirPath);
-            
-            DisplayMessage($"Directory already exists in {targetDirPath}", ConsoleColor.Green);
+
+            // DisplayMessage($"Directory already exists in {targetDirPath}", ConsoleColor.Green);
         }
 
         Console.WriteLine();
@@ -95,7 +95,7 @@ class Program
         DisplayMessage($"Copying: {sourcePath} to {targetPath}", ConsoleColor.DarkGray);
         File.Copy(sourcePath, targetPath);
     }
-    
+
     private static void CreateMissingDirectories(string sourcePath, string targetPath)
     {
         DisplayMessage($"Copying: {sourcePath} to {targetPath}", ConsoleColor.DarkGray);
@@ -106,11 +106,16 @@ class Program
     {
         foreach (var dir in Directory.GetDirectories(path))
         {
-            if (Directory.Exists(dir))
+            GetDirectories(dir);
+            var files = Directory.GetFiles(dir);
+            DisplayMessage("Current dir:" + dir, ConsoleColor.Magenta);
+            DisplayMessage("Files in it:", ConsoleColor.DarkBlue);
+            foreach (var file in files)
             {
-                GetDirectories(dir);
-                Console.WriteLine("Current dir:" + dir);
+                DisplayMessage(file, ConsoleColor.Green);
             }
+            
+            Console.WriteLine();
         }
     }
 }
