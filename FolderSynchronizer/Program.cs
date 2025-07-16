@@ -32,6 +32,12 @@ class Program
         var logFilePath = args[3];
 
         var cancellationToken = new CancellationTokenSource();
+        
+        Console.CancelKeyPress += (s, e) =>
+        {
+            cancellationToken.Cancel();
+        };
+        
         var timer = new Timer(_ =>
             {
                 try
@@ -51,6 +57,7 @@ class Program
             .WaitHandle
             .WaitOne();
 
+        DisplayMessage("Directory synchronization stopped. (CTRL + C pressed).", ConsoleColor.Yellow);
         timer.Dispose();
     }
 
@@ -68,11 +75,6 @@ class Program
 
             DisplayMessage("Directory created.");
         }
-
-        Console.CancelKeyPress += (s, e) =>
-        {
-            DisplayMessage("Directory synchronization stopped. (CTRL + C pressed).", ConsoleColor.Yellow);
-        };
 
         foreach (var sourceFilePath in filesInSourceDir)
         {
