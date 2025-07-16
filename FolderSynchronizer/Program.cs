@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Runtime.Loader;
 
 namespace FolderSynchronizer;
 
@@ -41,6 +42,11 @@ class Program
 
             DisplayMessage("Directory created.");
         }
+        
+        Console.CancelKeyPress += (s, e) =>
+        {
+            DisplayMessage("Directory synchronization stopped. (CTRL + C pressed).", ConsoleColor.Yellow);
+        };
         
         foreach (var sourceFilePath in filesInSourceDir)
         {
