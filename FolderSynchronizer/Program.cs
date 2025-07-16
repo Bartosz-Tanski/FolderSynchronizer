@@ -51,6 +51,8 @@ class Program
         }
 
         CreateDirectories(sourceDirectory, replicaDirectory);
+        
+        // TODO: Add interval synchronizing.
     }
 
     private static void DisplayHelpMessage()
