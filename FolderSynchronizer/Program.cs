@@ -1,4 +1,6 @@
-﻿namespace FolderSynchronizer;
+﻿using System.Net;
+
+namespace FolderSynchronizer;
 
 class Program
 {
@@ -21,6 +23,8 @@ class Program
         var replicaDirectory = args[1];
         var interval = int.Parse(args[2]);
         var logFilePath = args[3];
+        
+        var filesInSourceDir = Directory.GetFiles(sourceDirectory);
 
         if (!Directory.Exists(sourceDirectory))
         {
@@ -37,34 +41,20 @@ class Program
 
             DisplayMessage("Directory created.");
         }
-
-        var filesInSourceDir = Directory.GetFiles(sourceDirectory);
-        var directoriesInSourceDir = Directory.GetDirectories(sourceDirectory);
-
+        
         foreach (var sourceFilePath in filesInSourceDir)
         {
             var targetFilePath = Path.Combine(replicaDirectory, Path.GetFileName(sourceFilePath));
 
             if (!File.Exists(targetFilePath))
                 CopyFile(sourceFilePath, targetFilePath);
-
-            // DisplayMessage($"File already exists in {targetFilePath}", ConsoleColor.Green);
         }
 
-        foreach (var sourceDirectoryPath in directoriesInSourceDir)
-        {
-            var targetDirPath = Path.Combine(replicaDirectory, Path.GetFileName(sourceDirectoryPath));
-
-            if (!Directory.Exists(targetDirPath))
-                CreateMissingDirectories(sourceDirectoryPath, targetDirPath);
-
-            // DisplayMessage($"Directory already exists in {targetDirPath}", ConsoleColor.Green);
-        }
+        CreateDirectories(sourceDirectory, replicaDirectory);
 
         Console.WriteLine();
         Console.WriteLine();
         Console.WriteLine();
-        GetDirectories(sourceDirectory);
     }
 
     private static void DisplayHelpMessage()
@@ -95,27 +85,25 @@ class Program
         DisplayMessage($"Copying: {sourcePath} to {targetPath}", ConsoleColor.DarkGray);
         File.Copy(sourcePath, targetPath);
     }
-
-    private static void CreateMissingDirectories(string sourcePath, string targetPath)
+    
+    private static void CreateDirectories(string sourcePath, string targetPath)
     {
-        DisplayMessage($"Copying: {sourcePath} to {targetPath}", ConsoleColor.DarkGray);
-        Directory.CreateDirectory(targetPath);
-    }
-
-    private static void GetDirectories(string path)
-    {
-        foreach (var dir in Directory.GetDirectories(path))
+        var innerSourceDirectories = Directory.GetDirectories(sourcePath);
+        
+        foreach (var innerDirectory in innerSourceDirectories)
         {
-            GetDirectories(dir);
-            var files = Directory.GetFiles(dir);
-            DisplayMessage("Current dir:" + dir, ConsoleColor.Magenta);
-            DisplayMessage("Files in it:", ConsoleColor.DarkBlue);
-            foreach (var file in files)
+            var combinedTargetPath = Path.Combine(targetPath, Path.GetFileName(innerDirectory));
+
+            if (!Directory.Exists(combinedTargetPath))
             {
-                DisplayMessage(file, ConsoleColor.Green);
+                DisplayMessage($"Creating folder at: {combinedTargetPath}", ConsoleColor.DarkGray);
+                Directory.CreateDirectory(combinedTargetPath);
             }
-            
-            Console.WriteLine();
+
+            if (Directory.GetDirectories(innerDirectory).Length > 0)
+            {
+                CreateDirectories(innerDirectory, combinedTargetPath);
+            }
         }
     }
 }
