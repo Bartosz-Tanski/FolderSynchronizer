@@ -51,8 +51,6 @@ class Program
         }
 
         CreateDirectories(sourceDirectory, replicaDirectory);
-
-        // TODO: Add creating files after creating directory in CreateDirectories method.
     }
 
     private static void DisplayHelpMessage()
@@ -96,6 +94,26 @@ class Program
             {
                 DisplayMessage($"Creating folder at: {combinedTargetPath}", ConsoleColor.DarkGray);
                 Directory.CreateDirectory(combinedTargetPath);
+            }
+            
+            var innerSourceFiles = Directory.GetFiles(innerDirectory);
+            if (innerSourceFiles.Length > 0)
+            {
+                foreach (var innerSourceFile in innerSourceFiles)
+                {
+                    // Console.WriteLine("innerSourceFile: " + innerSourceFile);
+                    // Console.WriteLine("combinedTargetPath: " + combinedTargetPath);
+
+                    var combinedTargetPathForFile = Path.Combine(combinedTargetPath, Path.GetFileName(innerSourceFile));
+                    
+                    // DisplayMessage($"Creating file: {innerSourceFile} at: {combinedTargetPathForFile}", ConsoleColor.DarkGray);
+
+                    if (!File.Exists(combinedTargetPathForFile))
+                    {
+                        // DisplayMessage($"Creating file: {innerSourceFile} at: {combinedTargetPathForFile}", ConsoleColor.DarkGray);
+                        CopyFile(innerSourceFile, combinedTargetPathForFile);
+                    }
+                }
             }
 
             if (Directory.GetDirectories(innerDirectory).Length > 0)
