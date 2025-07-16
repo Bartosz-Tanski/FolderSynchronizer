@@ -61,7 +61,7 @@ class Program
         Console.WriteLine("  Where:");
         Console.WriteLine("    <SourceDir>  - Path to source directory");
         Console.WriteLine("    <ReplicaDir> - Path to replica directory. All files must be the same as in source");
-        Console.WriteLine("    <Interval>   - Must be a number. Synchronization interval");
+        Console.WriteLine("    <Interval>   - Must be a number. Synchronization interval in seconds");
         Console.WriteLine("    <LogPath>    - Path to directory where logs should be stored");
 
         Console.WriteLine();
