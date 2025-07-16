@@ -33,7 +33,9 @@ class Program
             DisplayMessage($"Replica directory: {replicaDirectory} doesn't exist.", ConsoleColor.Yellow);
             DisplayMessage($"Creating directory at given path: {replicaDirectory} ...", ConsoleColor.DarkGray);
 
-            // TODO: Create directory
+            Directory.CreateDirectory(replicaDirectory);
+            
+            DisplayMessage("Directory created.");
         }
     }
     
