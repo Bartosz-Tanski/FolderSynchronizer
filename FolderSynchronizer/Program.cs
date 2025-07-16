@@ -19,19 +19,45 @@ class Program
             DisplayHelpMessage();
             return;
         }
+        
+        if (!Directory.Exists(args[0]))
+        {
+            DisplayMessage($"Source directory: {args[0]} doesn't exist!", ConsoleColor.Red);
+            return;
+        }
 
         var sourceDirectory = args[0];
         var replicaDirectory = args[1];
         var interval = int.Parse(args[2]);
         var logFilePath = args[3];
-        
-        var filesInSourceDir = Directory.GetFiles(sourceDirectory);
 
-        if (!Directory.Exists(sourceDirectory))
-        {
-            DisplayMessage($"Source directory: {sourceDirectory} doesn't exist!", ConsoleColor.Red);
-            return;
-        }
+        var cancellationToken = new CancellationTokenSource();
+        var timer = new Timer(_ =>
+            {
+                try
+                {
+                    Synchronize(sourceDirectory, replicaDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"This will be logged: {ex} in {logFilePath}");
+                }
+            },
+            state: null,
+            dueTime: 0, // Synchronizing starts immediately
+            period: interval * 1000); // Synchronize each <Interval> seconds
+        
+        cancellationToken.Token
+            .WaitHandle
+            .WaitOne();
+
+        timer.Dispose();
+    }
+
+
+    private static void Synchronize(string sourceDirectory, string replicaDirectory)
+    {
+        var filesInSourceDir = Directory.GetFiles(sourceDirectory);
 
         if (!Directory.Exists(replicaDirectory))
         {
@@ -42,12 +68,12 @@ class Program
 
             DisplayMessage("Directory created.");
         }
-        
+
         Console.CancelKeyPress += (s, e) =>
         {
             DisplayMessage("Directory synchronization stopped. (CTRL + C pressed).", ConsoleColor.Yellow);
         };
-        
+
         foreach (var sourceFilePath in filesInSourceDir)
         {
             var targetFilePath = Path.Combine(replicaDirectory, Path.GetFileName(sourceFilePath));
@@ -57,9 +83,10 @@ class Program
         }
 
         CreateDirectories(sourceDirectory, replicaDirectory);
-        
-        // TODO: Add interval synchronizing.
+
+        Console.WriteLine("Synchronization tick");
     }
+
 
     private static void DisplayHelpMessage()
     {
@@ -89,11 +116,11 @@ class Program
         DisplayMessage($"Copying: {sourcePath} to {targetPath}", ConsoleColor.DarkGray);
         File.Copy(sourcePath, targetPath);
     }
-    
+
     private static void CreateDirectories(string sourcePath, string targetPath)
     {
         var innerSourceDirectories = Directory.GetDirectories(sourcePath);
-        
+
         foreach (var innerDirectory in innerSourceDirectories)
         {
             var combinedTargetPath = Path.Combine(targetPath, Path.GetFileName(innerDirectory));
@@ -103,22 +130,16 @@ class Program
                 DisplayMessage($"Creating folder at: {combinedTargetPath}", ConsoleColor.DarkGray);
                 Directory.CreateDirectory(combinedTargetPath);
             }
-            
+
             var innerSourceFiles = Directory.GetFiles(innerDirectory);
             if (innerSourceFiles.Length > 0)
             {
                 foreach (var innerSourceFile in innerSourceFiles)
                 {
-                    // Console.WriteLine("innerSourceFile: " + innerSourceFile);
-                    // Console.WriteLine("combinedTargetPath: " + combinedTargetPath);
-
                     var combinedTargetPathForFile = Path.Combine(combinedTargetPath, Path.GetFileName(innerSourceFile));
                     
-                    // DisplayMessage($"Creating file: {innerSourceFile} at: {combinedTargetPathForFile}", ConsoleColor.DarkGray);
-
                     if (!File.Exists(combinedTargetPathForFile))
                     {
-                        // DisplayMessage($"Creating file: {innerSourceFile} at: {combinedTargetPathForFile}", ConsoleColor.DarkGray);
                         CopyFile(innerSourceFile, combinedTargetPathForFile);
                     }
                 }
