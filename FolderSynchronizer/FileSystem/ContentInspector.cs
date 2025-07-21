@@ -28,7 +28,7 @@ public class ContentInspector : IContentInspector
         return true;
     }
 
-    public bool HasMatchingTimestamps(string sourcePath, string replicaPath)
+    public bool HasMatchingFileTimestamps(string sourcePath, string replicaPath)
     {
         throw new NotImplementedException();
     }
