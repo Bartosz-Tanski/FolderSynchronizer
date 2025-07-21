@@ -37,12 +37,6 @@ public class DirectoryMonitor : IDirectoryMonitor
             return;
         }
         
-        if (!_contentInspector.HasMatchingFileTimestamps(sourcePath, replicaPath))
-        {
-            _contentManager.RemoveContentTimestampMismatch(sourcePath, replicaPath);
-            return;
-        }
-        
         if (!_contentInspector.HasMatchingContentStructure(sourcePath, replicaPath))
         {
             _contentManager.RemoveContentStructureMismatch(sourcePath, replicaPath);

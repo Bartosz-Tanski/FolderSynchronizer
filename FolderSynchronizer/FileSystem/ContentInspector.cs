@@ -28,11 +28,6 @@ public class ContentInspector : IContentInspector
         return true;
     }
 
-    public bool HasMatchingFileTimestamps(string sourcePath, string replicaPath)
-    {
-        throw new NotImplementedException();
-    }
-
     public bool HasSameFileCount(string sourcePath, string replicaPath)
     {
         var sourceFiles = _contentManager.GetAllFilesPaths(sourcePath);

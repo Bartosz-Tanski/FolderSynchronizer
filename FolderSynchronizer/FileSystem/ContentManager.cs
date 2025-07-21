@@ -42,11 +42,6 @@ public class ContentManager : IContentManager
         }
     }
 
-    public void RemoveContentTimestampMismatch(string sourcePath, string replicaPath)
-    {
-        throw new NotImplementedException();
-    }
-
     public void EqualizeFileCount(string sourcePath, string replicaPath)
     {
         // TODO: Fix code repetition 
