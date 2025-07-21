@@ -8,15 +8,14 @@ public class DirectorySynchronizerApp
     private readonly IArgumentsValidator _argumentsValidator;
     private readonly IUserInterface _userInterface;
 
-    private readonly IContentManager _contentManager;
-
-    public DirectorySynchronizerApp(IDirectoryMonitor monitor, IArgumentsValidator argumentsValidator, IUserInterface userInterface, IContentManager contentManager)
+    public DirectorySynchronizerApp(
+        IDirectoryMonitor monitor, 
+        IArgumentsValidator argumentsValidator, 
+        IUserInterface userInterface)
     {
         _monitor = monitor;
         _argumentsValidator = argumentsValidator;
         _userInterface = userInterface;
-        
-        _contentManager = contentManager;
     }
 
     public void Run(string[] args)
@@ -27,28 +26,8 @@ public class DirectorySynchronizerApp
         var replicaDirectory = args[1];
         var interval = int.Parse(args[2]);
         var logFilePath = args[3];
-
-        var filesInSource = _contentManager.GetAllFilesPaths(sourceDirectory);
-        var filesInReplica = _contentManager.GetAllFilesPaths(replicaDirectory);
-
-        var i = 0;
-        Console.WriteLine("Files in source:");
-        foreach (var file in filesInSource)
-        {
-            Console.WriteLine($"{++i}. {file}");
-        }
-
-        Console.WriteLine("\n\n");
         
-        i = 0;
-        Console.WriteLine("Files in replica:");
-        foreach (var file in filesInReplica)
-        {
-            Console.WriteLine($"{++i}. {file}");
-        
-        }
-        
-        // BeginSynchronization(sourceDirectory, replicaDirectory, interval, logFilePath);
+        BeginSynchronization(sourceDirectory, replicaDirectory, interval, logFilePath);
     }
 
     private void BeginSynchronization(string sourceDirectory, string replicaDirectory, int interval, string logFilePath)
