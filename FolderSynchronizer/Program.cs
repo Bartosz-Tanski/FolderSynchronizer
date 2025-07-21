@@ -9,9 +9,10 @@ public static class Program
     public static void Main(string[] args)
     {
         var userInterface = new ConsoleUserInterface();
-        var monitor = new DirectoryMonitor(new ContentManager(), userInterface, new ContentInspector());
+        var contentManager = new ContentManager();
+        var monitor = new DirectoryMonitor(contentManager, userInterface, new ContentInspector(contentManager));
         
-        var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator(), userInterface, new ContentManager());
+        var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator(), userInterface);
 
         app.Run(args);
     }
