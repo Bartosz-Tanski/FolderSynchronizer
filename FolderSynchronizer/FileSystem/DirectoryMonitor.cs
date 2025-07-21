@@ -24,28 +24,28 @@ public class DirectoryMonitor : IDirectoryMonitor
             _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
             return;
         }
-
+        
         if (!_contentInspector.HasSameFileCount(sourcePath, replicaPath))
         {
             _contentManager.EqualizeFileCount(sourcePath, replicaPath);
             return;
         }
         
-        if (!_contentInspector.HasSameContentSizes(sourcePath, replicaPath))
+        if (!_contentInspector.HasSameContentSizes(sourcePath, replicaPath, out var replicaFilesWithWrongSizes))
         {
-            _contentManager.RemoveContentSizeMismatch(sourcePath, replicaPath);
-            return;
-        }
-
-        if (!_contentInspector.HasSameContentNames(sourcePath, replicaPath))
-        {
-            _contentManager.RenameContent(sourcePath, replicaPath);
+            _contentManager.RemoveFiles(replicaFilesWithWrongSizes);
             return;
         }
         
-        if (!_contentInspector.IsContentIntegral(sourcePath, replicaPath))
+        if (!_contentInspector.HasSameContentNames(sourcePath, replicaPath, out var replicaFilesWithWrongNames))
         {
-            _contentManager.RemoveNonIntegralContent(sourcePath, replicaPath);
+            _contentManager.RemoveFiles(replicaFilesWithWrongNames);
+            return;
+        }
+        
+        if (!_contentInspector.IsContentIntegral(sourcePath, replicaPath, out var notValidReplicaFiles))
+        {
+            _contentManager.RemoveFiles(notValidReplicaFiles);
             return;
         }
 

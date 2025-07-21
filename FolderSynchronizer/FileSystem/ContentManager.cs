@@ -4,6 +4,16 @@ namespace FolderSynchronizer.FileSystem;
 
 public class ContentManager : IContentManager
 {
+    public string[] GetAllFilesPaths(string path)
+    {
+        var allDirectories = GetAllDirectoriesPaths(path);
+        var allFiles = Directory.GetFiles(path).Select(file => file).ToList();
+
+        allFiles.AddRange(allDirectories.SelectMany(Directory.GetFiles));
+
+        return allFiles.ToArray();
+    }
+    
     public string[] GetAllDirectoriesPaths(string path)
     {
         var result = new List<string>();
@@ -23,25 +33,7 @@ public class ContentManager : IContentManager
             GetDirectories(directory, outputList);
         }
     }
-
-    public void RemoveContentSizeMismatch(string sourcePath, string replicaPath)
-    {
-        var allSourceFiles = GetAllFilesPaths(sourcePath);
-        var allReplicaFiles = GetAllFilesPaths(replicaPath);
-
-        for (int i = 0; i < allSourceFiles.Length; i++)
-        {
-            var sourceFileInfo = new FileInfo(allSourceFiles[i]);
-            var replicaFileInfo = new FileInfo(allReplicaFiles[i]);
-
-            if (sourceFileInfo.Length != replicaFileInfo.Length)
-            {
-                Console.WriteLine("Removing: " + allReplicaFiles[i]);
-                File.Delete(allReplicaFiles[i]);
-            }
-        }
-    }
-
+    
     public void EqualizeFileCount(string sourcePath, string replicaPath)
     {
         // TODO: Fix code repetition 
@@ -126,28 +118,12 @@ public class ContentManager : IContentManager
         }
     }
 
-    public void RemoveContentStructureMismatch(string sourcePath, string replicaPath)
+    public void RemoveFiles(List<string> notValidReplicaFiles)
     {
-        throw new NotImplementedException();
-    }
-
-    public void RemoveNonIntegralContent(string sourcePath, string replicaPath)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void RenameContent(string sourcePath, string replicaPath)
-    {
-        throw new NotImplementedException();
-    }
-
-    public string[] GetAllFilesPaths(string path)
-    {
-        var allDirectories = GetAllDirectoriesPaths(path);
-        var allFiles = Directory.GetFiles(path).Select(file => file).ToList();
-
-        allFiles.AddRange(allDirectories.SelectMany(Directory.GetFiles));
-
-        return allFiles.ToArray();
+        foreach (var file in notValidReplicaFiles)
+        {
+            Console.WriteLine("Removing file: " + file);
+            File.Delete(file);
+        }
     }
 }
