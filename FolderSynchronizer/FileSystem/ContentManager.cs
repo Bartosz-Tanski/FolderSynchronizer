@@ -4,17 +4,6 @@ namespace FolderSynchronizer.FileSystem;
 
 public class ContentManager : IContentManager
 {
-    public void RemoveAllFiles(string path)
-    {
-        var allFiles = GetAllFilesPaths(path);
-
-        foreach (var file in allFiles)
-        {
-            Console.WriteLine("Remove: " + file);
-            File.Delete(file);
-        }
-    }
-    
     public string[] GetAllFilesPaths(string path)
     {
         var allDirectories = GetAllDirectoriesPaths(path);
@@ -32,17 +21,6 @@ public class ContentManager : IContentManager
         GetDirectories(path, result);
 
         return result.ToArray();
-    }
-
-    private void GetDirectories(string currentPath, List<string> outputList)
-    {
-        var innerDirectories = Directory.GetDirectories(currentPath);
-
-        foreach (var directory in innerDirectories)
-        {
-            outputList.Add(directory);
-            GetDirectories(directory, outputList);
-        }
     }
     
     public void EqualizeFileCount(string sourcePath, string replicaPath)
@@ -135,6 +113,28 @@ public class ContentManager : IContentManager
         foreach (var file in notValidReplicaFiles)
         {
             Console.WriteLine("Removing file: " + file);
+            File.Delete(file);
+        }
+    }
+    
+    private void GetDirectories(string currentPath, List<string> outputList)
+    {
+        var innerDirectories = Directory.GetDirectories(currentPath);
+
+        foreach (var directory in innerDirectories)
+        {
+            outputList.Add(directory);
+            GetDirectories(directory, outputList);
+        }
+    }
+    
+    private void RemoveAllFiles(string path)
+    {
+        var allFiles = GetAllFilesPaths(path);
+
+        foreach (var file in allFiles)
+        {
+            Console.WriteLine("Remove: " + file);
             File.Delete(file);
         }
     }
