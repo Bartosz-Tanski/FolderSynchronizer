@@ -7,7 +7,7 @@ public class ContentManager : IContentManager
     public string[] GetAllFilesPaths(string path)
     {
         var allDirectories = GetAllDirectoriesPaths(path);
-        var allFiles = Directory.GetFiles(path).Select(file => file).ToList();
+        var allFiles = Directory.GetFiles(path).ToList();
 
         allFiles.AddRange(allDirectories.SelectMany(Directory.GetFiles));
 
@@ -23,46 +23,48 @@ public class ContentManager : IContentManager
         return result.ToArray();
     }
     
+    
+    private IEnumerable<string?> GetMissingContent (string firstPath, string secondPath)
+    {
+        var firstPathContentNames = GetAllFilesPaths(firstPath).Select(Path.GetFileName).ToList();
+        var secondPathContentNames = GetAllFilesPaths(secondPath).Select(Path.GetFileName).ToList();
+        
+        var missingContentNames = firstPathContentNames.Except(secondPathContentNames);
+        
+        return GetAllFilesPaths(firstPath).Where(file => missingContentNames.Contains(Path.GetFileName(file)));
+    }
+    
+    private void CopyMissingFiles(string sourcePath, string replicaPath)
+    {
+        foreach (var file in GetMissingContent(sourcePath, replicaPath))
+        {
+            var relativePath = Path.GetRelativePath(sourcePath, file!);
+            var targetFilePath = Path.Combine(replicaPath, relativePath);
+
+            Console.WriteLine($"Copy: {file} file to: {targetFilePath}"); // TODO: Add real logging
+            File.Copy(file!, targetFilePath);
+        }
+    }
+
+    private void RemoveExcessFiles(string sourcePath, string replicaPath)
+    {
+        foreach (var file in GetMissingContent(replicaPath, sourcePath))
+        {
+            Console.WriteLine("Deleting: " + file!); // TODO: Add real logging
+            File.Delete(file!);
+        }
+    }
+    
     public void EqualizeFileCount(string sourcePath, string replicaPath)
     {
         // TODO: Fix code repetition 
-        
-        var sourceFiles = GetAllFilesPaths(sourcePath);
-        var replicaFiles = GetAllFilesPaths(replicaPath);
-
-        var sourceFileNames = sourceFiles.Select(Path.GetFileName).ToList();
-        var replicaFileNames = replicaFiles.Select(Path.GetFileName).ToList();
-
-        if (sourceFiles.Length > replicaFiles.Length)
+        if (GetAllFilesPaths(sourcePath).Length > GetAllFilesPaths(replicaPath).Length)
         {
-            var missingFileNamesInReplica = sourceFileNames.Except(replicaFileNames);
-
-            var filesToCopy = sourceFiles
-                .Where(file => missingFileNamesInReplica.Contains(Path.GetFileName(file)));
-
-            foreach (var fileToCopy in filesToCopy)
-            {
-                var relativePath = Path.GetRelativePath(sourcePath, fileToCopy);
-
-                var targetFilePath = Path.Combine(replicaPath, relativePath);
-
-                Console.WriteLine($"Copy: {fileToCopy} file to: {targetFilePath}"); // TODO: Add real logging
-                File.Copy(fileToCopy, targetFilePath);
-            }
-
+            CopyMissingFiles(sourcePath, replicaPath);
             return;
         }
 
-        var excessFileNamesInReplica = replicaFileNames.Except(sourceFileNames);
-
-        var replicaFilesToDeletePaths = replicaFiles
-            .Where(file => excessFileNamesInReplica.Contains(Path.GetFileName(file)));
-
-        foreach (var filesToDelete in replicaFilesToDeletePaths)
-        {
-            Console.WriteLine("Deleting: " + filesToDelete); // TODO: Add real logging
-            File.Delete(filesToDelete);
-        }
+        RemoveExcessFiles(sourcePath, replicaPath);
     }
 
     public void EqualizeDirectoryCount(string sourcePath, string replicaPath)
