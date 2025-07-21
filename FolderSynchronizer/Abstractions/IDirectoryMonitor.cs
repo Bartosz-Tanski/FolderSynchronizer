@@ -2,5 +2,5 @@
 
 public interface IDirectoryMonitor
 {
-    
+    void Monitor(string sourcePath, string replicaPath);
 }

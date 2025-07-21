@@ -8,11 +8,10 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var app = new DirectorySynchronizerApp(
-            new ArgumentsValidator(),
-            new ConsoleUserInterface(),
-            new ContentManager()
-        );
+        var userInterface = new ConsoleUserInterface();
+        var monitor = new DirectoryMonitor(new ContentManager(), userInterface, new ContentInspector());
+        
+        var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator(), userInterface, new ContentManager());
 
         app.Run(args);
     }
