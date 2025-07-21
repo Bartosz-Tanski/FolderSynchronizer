@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using FolderSynchronizer.Abstractions;
+﻿using FolderSynchronizer.Abstractions;
 
 namespace FolderSynchronizer.FileSystem;
 
