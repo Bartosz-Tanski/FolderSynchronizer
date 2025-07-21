@@ -6,7 +6,8 @@ public interface IContentManager
     string[] GetAllDirectoriesPaths(string path);
     void RemoveContentSizeMismatch(string sourcePath, string replicaPath);
     void RemoveContentTimestampMismatch(string sourcePath, string replicaPath);
-    void EqualizeContentCount(string sourcePath, string replicaPath);
+    void EqualizeFileCount(string sourcePath, string replicaPath);
+    void EqualizeDirectoryCount(string sourcePath, string replicaPath);
     void RemoveContentStructureMismactch(string sourcePath, string replicaPath);
     void RemoveNonIntegralContent(string sourcePath, string replicaPath);
 }

@@ -21,7 +21,7 @@ public class ContentInspector : IContentInspector
         throw new NotImplementedException();
     }
 
-    public bool HasSameContentCount(string sourcePath, string replicaPath)
+    public bool HasSameFileCount(string sourcePath, string replicaPath)
     {
         var sourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
         var sourceDirectories = _contentManager.GetAllDirectoriesPaths(sourcePath);
@@ -30,6 +30,11 @@ public class ContentInspector : IContentInspector
         var replicaDirectories = _contentManager.GetAllDirectoriesPaths(replicaPath);
 
         return sourceFiles.Length + sourceDirectories.Length == replicaFiles.Length + replicaDirectories.Length;
+    }
+
+    public bool HasSameDirectoryCount(string sourcePath, string replicaPath)
+    {
+        throw new NotImplementedException();
     }
 
     public bool HasMatchingContentStructure(string sourcePath, string replicaPath)

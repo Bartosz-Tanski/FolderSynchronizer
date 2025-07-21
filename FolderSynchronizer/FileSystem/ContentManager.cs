@@ -1,12 +1,9 @@
-﻿using System.Threading.Channels;
-using FolderSynchronizer.Abstractions;
+﻿using FolderSynchronizer.Abstractions;
 
 namespace FolderSynchronizer.FileSystem;
 
 public class ContentManager : IContentManager
 {
-    private string GetNameOnly(string path) => Path.GetFileName(path);
-    
     public string[] GetAllDirectoriesPaths(string path)
     {
         var result = new List<string>();
@@ -18,7 +15,7 @@ public class ContentManager : IContentManager
     
     private void GetDirectories(string currentPath, List<string> outputList)
     {
-        string[] innerDirectories = Directory.GetDirectories(currentPath);
+        var innerDirectories = Directory.GetDirectories(currentPath);
         
         foreach (var directory in innerDirectories)
         {
@@ -37,12 +34,15 @@ public class ContentManager : IContentManager
         throw new NotImplementedException();
     }
 
-    public void EqualizeContentCount(string sourcePath, string replicaPath)
+    public void EqualizeFileCount(string sourcePath, string replicaPath)
     {
-        var sourceFilesNames = GetAllFilesPaths(sourcePath).Select(GetNameOnly).ToArray();
-        var replicaFilesNames = GetAllFilesPaths(replicaPath).Select(GetNameOnly).ToArray();
+        var sourceFiles = GetAllFilesPaths(sourcePath);
+        var replicaFiles = GetAllFilesPaths(replicaPath);
 
-        if (sourceFilesNames.Length > replicaFilesNames.Length)
+        var sourceFilesNames = sourceFiles.Select(Path.GetFileName);
+        var replicaFilesNames = replicaFiles.Select(Path.GetFileName);
+
+        if (sourceFiles.Length > replicaFiles.Length)
         {
             var excessFilesInSource = sourceFilesNames.Except(replicaFilesNames);
 
@@ -60,6 +60,11 @@ public class ContentManager : IContentManager
         {
             Console.WriteLine("I should delete: " + file);
         }
+    }
+
+    public void EqualizeDirectoryCount(string sourcePath, string replicaPath)
+    {
+        throw new NotImplementedException();
     }
 
     public void RemoveContentStructureMismactch(string sourcePath, string replicaPath)
