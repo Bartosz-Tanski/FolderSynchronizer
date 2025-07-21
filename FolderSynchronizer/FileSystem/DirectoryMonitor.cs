@@ -19,9 +19,15 @@ public class DirectoryMonitor : IDirectoryMonitor
 
     public void Monitor(string sourcePath, string replicaPath)
     {
-        if (!_contentInspector.HasSameContentCount(sourcePath, replicaPath))
+        if (!_contentInspector.HasSameFileCount(sourcePath, replicaPath))
         {
-            _contentManager.EqualizeContentCount(sourcePath, replicaPath);
+            _contentManager.EqualizeFileCount(sourcePath, replicaPath);
+            return;
+        }
+        
+        if (!_contentInspector.HasSameDirectoryCount(sourcePath, replicaPath))
+        {
+            _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
             return;
         }
         
