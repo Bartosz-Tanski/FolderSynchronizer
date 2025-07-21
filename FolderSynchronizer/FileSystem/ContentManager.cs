@@ -1,5 +1,4 @@
-﻿using System.Threading.Channels;
-using FolderSynchronizer.Abstractions;
+﻿using FolderSynchronizer.Abstractions;
 
 namespace FolderSynchronizer.FileSystem;
 
@@ -49,33 +48,74 @@ public class ContentManager : IContentManager
 
             var filesToCopy = sourceFiles
                 .Where(file => missingFileNamesInReplica.Contains(Path.GetFileName(file)));
-        
-            foreach (var sourceFilePath in filesToCopy)
+
+            foreach (var fileToCopy in filesToCopy)
             {
-                var relativePath = Path.GetRelativePath(sourcePath, sourceFilePath);
-        
+                var relativePath = Path.GetRelativePath(sourcePath, fileToCopy);
+
                 var targetFilePath = Path.Combine(replicaPath, relativePath);
 
-                Console.WriteLine($"Copy: {sourceFilePath} file to: {targetFilePath}"); // TODO: Add real logging
-                File.Copy(sourceFilePath, targetFilePath);
+                Console.WriteLine($"Copy: {fileToCopy} file to: {targetFilePath}"); // TODO: Add real logging
+                File.Copy(fileToCopy, targetFilePath);
             }
+
+            return;
         }
 
         var excessFileNamesInReplica = replicaFileNames.Except(sourceFileNames);
 
         var replicaFilesToDeletePaths = replicaFiles
             .Where(file => excessFileNamesInReplica.Contains(Path.GetFileName(file)));
-        
-        foreach (var replicaFilePath in replicaFilesToDeletePaths)
+
+        foreach (var filesToDelete in replicaFilesToDeletePaths)
         {
-            Console.WriteLine("Deleting: " + replicaFilePath); // TODO: Add real logging
-            File.Delete(replicaFilePath);
+            Console.WriteLine("Deleting: " + filesToDelete); // TODO: Add real logging
+            File.Delete(filesToDelete);
         }
     }
 
     public void EqualizeDirectoryCount(string sourcePath, string replicaPath)
     {
-        throw new NotImplementedException();
+        var sourceDirectories = GetAllDirectoriesPaths(sourcePath);
+        var replicaDirectories = GetAllDirectoriesPaths(replicaPath);
+
+        var sourceDirectoriesNames = sourceDirectories.Select(Path.GetFileName);
+        var replicaDirectoriesNames = replicaDirectories.Select(Path.GetFileName);
+
+        if (sourceDirectories.Length > replicaDirectories.Length)
+        {
+            var missingDirectoriesInReplica = sourceDirectoriesNames.Except(replicaDirectoriesNames);
+
+            var directoriesToCreate = sourceDirectories
+                .Where(dir => missingDirectoriesInReplica.Contains(Path.GetFileName(dir)));
+
+            foreach (var directoryToCreate in directoriesToCreate)
+            {
+                var relativePath = Path.GetRelativePath(sourcePath, directoryToCreate);
+
+                var targetDirectoryPath = Path.Combine(replicaPath, relativePath);
+
+                Console.WriteLine($"Creating directory: {targetDirectoryPath}"); // TODO: Add real logging
+
+                if (!Directory.Exists(targetDirectoryPath))
+                {
+                    Directory.CreateDirectory(targetDirectoryPath);
+                }
+            }
+
+            return;
+        }
+
+        var excessDirectoriesNamesInReplica = replicaDirectoriesNames.Except(sourceDirectoriesNames);
+
+        var replicaDirectoriesToDeletePaths = replicaDirectories
+            .Where(file => excessDirectoriesNamesInReplica.Contains(Path.GetFileName(file)));
+
+        foreach (var directoriesToDelete in replicaDirectoriesToDeletePaths)
+        {
+            Console.WriteLine("Deleting: " + directoriesToDelete); // TODO: Add real logging
+            Directory.Delete(directoriesToDelete);
+        }
     }
 
     public void RemoveContentStructureMismactch(string sourcePath, string replicaPath)
