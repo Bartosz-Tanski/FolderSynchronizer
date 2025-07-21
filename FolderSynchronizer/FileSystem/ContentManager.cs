@@ -96,11 +96,7 @@ public class ContentManager : IContentManager
                 var targetDirectoryPath = Path.Combine(replicaPath, relativePath);
 
                 Console.WriteLine($"Creating directory: {targetDirectoryPath}"); // TODO: Add real logging
-
-                if (!Directory.Exists(targetDirectoryPath))
-                {
-                    Directory.CreateDirectory(targetDirectoryPath);
-                }
+                Directory.CreateDirectory(targetDirectoryPath);
             }
 
             return;
@@ -118,7 +114,7 @@ public class ContentManager : IContentManager
         }
     }
 
-    public void RemoveContentStructureMismactch(string sourcePath, string replicaPath)
+    public void RemoveContentStructureMismatch(string sourcePath, string replicaPath)
     {
         throw new NotImplementedException();
     }
