@@ -102,7 +102,7 @@ public class ContentManager : IContentManager
 
         for (int i = directoriesToRemove.Length - 1; i >= 0; i--)
         {
-            Console.WriteLine("Deleting: " + directoriesToRemove[i]);
+            Console.WriteLine("Deleting: " + directoriesToRemove[i]);  // TODO: Add logging
             RemoveAllFiles(directoriesToRemove[i]);
             Directory.Delete(directoriesToRemove[i]);
         }
@@ -112,7 +112,7 @@ public class ContentManager : IContentManager
     {
         foreach (var file in notValidReplicaFiles)
         {
-            Console.WriteLine("Removing file: " + file);
+            Console.WriteLine("Removing file: " + file);  // TODO: Add logging
             File.Delete(file);
         }
     }
@@ -134,7 +134,7 @@ public class ContentManager : IContentManager
 
         foreach (var file in allFiles)
         {
-            Console.WriteLine("Remove: " + file);
+            Console.WriteLine("Remove: " + file); // TODO: Add logging
             File.Delete(file);
         }
     }
