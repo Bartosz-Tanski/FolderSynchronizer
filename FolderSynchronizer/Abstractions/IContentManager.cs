@@ -8,6 +8,6 @@ public interface IContentManager
     void RemoveContentTimestampMismatch(string sourcePath, string replicaPath);
     void EqualizeFileCount(string sourcePath, string replicaPath);
     void EqualizeDirectoryCount(string sourcePath, string replicaPath);
-    void RemoveContentStructureMismactch(string sourcePath, string replicaPath);
+    void RemoveContentStructureMismatch(string sourcePath, string replicaPath);
     void RemoveNonIntegralContent(string sourcePath, string replicaPath);
 }

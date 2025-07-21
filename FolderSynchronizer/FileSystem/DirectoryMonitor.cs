@@ -45,7 +45,7 @@ public class DirectoryMonitor : IDirectoryMonitor
         
         if (!_contentInspector.HasMatchingContentStructure(sourcePath, replicaPath))
         {
-            _contentManager.RemoveContentStructureMismactch(sourcePath, replicaPath);
+            _contentManager.RemoveContentStructureMismatch(sourcePath, replicaPath);
             return;
         }
         
