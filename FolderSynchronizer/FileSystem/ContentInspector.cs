@@ -13,7 +13,19 @@ public class ContentInspector : IContentInspector
 
     public bool HasSameContentSizes(string sourcePath, string replicaPath)
     {
-        throw new NotImplementedException();
+        var allSourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
+        var allReplicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
+
+        for (int i = 0; i < allSourceFiles.Length; i++)
+        {
+            var sourceFileInfo = new FileInfo(allSourceFiles[i]);
+            var replicaFileInfo = new FileInfo(allReplicaFiles[i]);
+
+            if (sourceFileInfo.Length != replicaFileInfo.Length)
+                return false;
+        }
+
+        return true;
     }
 
     public bool HasMatchingTimestamps(string sourcePath, string replicaPath)

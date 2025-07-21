@@ -26,7 +26,20 @@ public class ContentManager : IContentManager
 
     public void RemoveContentSizeMismatch(string sourcePath, string replicaPath)
     {
-        throw new NotImplementedException();
+        var allSourceFiles = GetAllFilesPaths(sourcePath);
+        var allReplicaFiles = GetAllFilesPaths(replicaPath);
+
+        for (int i = 0; i < allSourceFiles.Length; i++)
+        {
+            var sourceFileInfo = new FileInfo(allSourceFiles[i]);
+            var replicaFileInfo = new FileInfo(allReplicaFiles[i]);
+
+            if (sourceFileInfo.Length != replicaFileInfo.Length)
+            {
+                Console.WriteLine("Removing: " + allReplicaFiles[i]);
+                File.Delete(allReplicaFiles[i]);
+            }
+        }
     }
 
     public void RemoveContentTimestampMismatch(string sourcePath, string replicaPath)
