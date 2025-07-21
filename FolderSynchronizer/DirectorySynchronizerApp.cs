@@ -63,31 +63,4 @@ public class DirectorySynchronizerApp
         _userInterface.DisplayMessage("Directory synchronization stopped. (CTRL + C pressed).", ConsoleColor.Yellow);
         timer.Dispose();
     }
-    
-    // private void Synchronize(string sourceDirectory, string replicaDirectory)
-    // {
-    //     var filesInSourceDir = Directory.GetFiles(sourceDirectory);
-    //
-    //     if (!Directory.Exists(replicaDirectory))
-    //     {
-    //         _userInterface.DisplayMessage($"Replica directory: {replicaDirectory} doesn't exist.", ConsoleColor.Yellow);
-    //         _userInterface.DisplayMessage($"Creating directory at given path: {replicaDirectory} ...", ConsoleColor.DarkGray);
-    //
-    //         Directory.CreateDirectory(replicaDirectory);
-    //
-    //         _userInterface.DisplayMessage("Directory created.");
-    //     }
-    //
-    //     foreach (var sourceFilePath in filesInSourceDir)
-    //     {
-    //         var targetFilePath = Path.Combine(replicaDirectory, Path.GetFileName(sourceFilePath));
-    //
-    //         // if (!File.Exists(targetFilePath))
-    //             // _contentManager.CopyFile(sourceFilePath, targetFilePath);
-    //     }
-    //
-    //     _contentManager.CreateDirectories(sourceDirectory, replicaDirectory);
-    //
-    //     Console.WriteLine("Press CTRL + C to stop synchronization...");
-    // }
 }
