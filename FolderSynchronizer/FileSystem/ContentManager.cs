@@ -36,6 +36,8 @@ public class ContentManager : IContentManager
 
     public void EqualizeFileCount(string sourcePath, string replicaPath)
     {
+        // TODO: Fix code repetition 
+        
         var sourceFiles = GetAllFilesPaths(sourcePath);
         var replicaFiles = GetAllFilesPaths(replicaPath);
 
@@ -76,6 +78,8 @@ public class ContentManager : IContentManager
 
     public void EqualizeDirectoryCount(string sourcePath, string replicaPath)
     {
+        // TODO: Fix code repetition 
+
         var sourceDirectories = GetAllDirectoriesPaths(sourcePath);
         var replicaDirectories = GetAllDirectoriesPaths(replicaPath);
 
