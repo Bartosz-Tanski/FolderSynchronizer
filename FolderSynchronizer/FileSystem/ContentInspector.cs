@@ -24,12 +24,9 @@ public class ContentInspector : IContentInspector
     public bool HasSameFileCount(string sourcePath, string replicaPath)
     {
         var sourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
-        var sourceDirectories = _contentManager.GetAllDirectoriesPaths(sourcePath);
-        
         var replicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
-        var replicaDirectories = _contentManager.GetAllDirectoriesPaths(replicaPath);
 
-        return sourceFiles.Length + sourceDirectories.Length == replicaFiles.Length + replicaDirectories.Length;
+        return sourceFiles.Length == replicaFiles.Length;
     }
 
     public bool HasSameDirectoryCount(string sourcePath, string replicaPath)
