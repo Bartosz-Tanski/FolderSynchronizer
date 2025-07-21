@@ -2,14 +2,14 @@
 
 namespace FolderSynchronizer;
 
-public class FolderSynchronizerApp
+public class DirectorySynchronizerApp
 {
     private readonly IArgumentsValidator _argumentsValidator;
     private readonly IUserInterface _userInterface;
     private readonly IFilesManager _filesManager;
     private readonly IDirectoriesManager _directoriesManager;
 
-    public FolderSynchronizerApp(
+    public DirectorySynchronizerApp(
         IArgumentsValidator argumentsValidator, 
         IUserInterface userInterface, 
         IFilesManager filesManager, 
@@ -85,52 +85,15 @@ public class FolderSynchronizerApp
             var targetFilePath = Path.Combine(replicaDirectory, Path.GetFileName(sourceFilePath));
 
             if (!File.Exists(targetFilePath))
-                CopyFile(sourceFilePath, targetFilePath);
+                _filesManager.CopyFile(sourceFilePath, targetFilePath);
         }
 
-        CreateDirectories(sourceDirectory, replicaDirectory);
+        _directoriesManager.CreateDirectories(sourceDirectory, replicaDirectory);
 
         Console.WriteLine("Press CTRL + C to stop synchronization...");
     }
     
-    private void CopyFile(string sourcePath, string targetPath)
-    {
-        _userInterface.DisplayMessage($"Copying: {sourcePath} to {targetPath}", ConsoleColor.DarkGray);
-        File.Copy(sourcePath, targetPath);
-    }
+    
 
-    private void CreateDirectories(string sourcePath, string targetPath)
-    {
-        var innerSourceDirectories = Directory.GetDirectories(sourcePath);
-
-        foreach (var innerDirectory in innerSourceDirectories)
-        {
-            var combinedTargetPath = Path.Combine(targetPath, Path.GetFileName(innerDirectory));
-
-            if (!Directory.Exists(combinedTargetPath))
-            {
-                _userInterface.DisplayMessage($"Creating folder at: {combinedTargetPath}", ConsoleColor.DarkGray);
-                Directory.CreateDirectory(combinedTargetPath);
-            }
-
-            var innerSourceFiles = Directory.GetFiles(innerDirectory);
-            if (innerSourceFiles.Length > 0)
-            {
-                foreach (var innerSourceFile in innerSourceFiles)
-                {
-                    var combinedTargetPathForFile = Path.Combine(combinedTargetPath, Path.GetFileName(innerSourceFile));
-
-                    if (!File.Exists(combinedTargetPathForFile))
-                    {
-                        CopyFile(innerSourceFile, combinedTargetPathForFile);
-                    }
-                }
-            }
-
-            if (Directory.GetDirectories(innerDirectory).Length > 0)
-            {
-                CreateDirectories(innerDirectory, combinedTargetPath);
-            }
-        }
-    }
+   
 }

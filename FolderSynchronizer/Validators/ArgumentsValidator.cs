@@ -8,7 +8,7 @@ public class ArgumentsValidator : IArgumentsValidator
     {
         if (args.Length != 4)
         {
-            throw new InvalidOperationException("Incorrect number of arguments.");
+            throw new InvalidOperationException("Incorrect number of arguments. Please run program with 4 arguments");
         }
         if (!int.TryParse(args[2], out _))
         {

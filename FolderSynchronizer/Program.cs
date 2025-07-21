@@ -8,11 +8,11 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var app = new FolderSynchronizerApp(
+        var app = new DirectorySynchronizerApp(
             new ArgumentsValidator(),
             new ConsoleUserInterface(),
             new FilesManager(),
-            new DirectoriesesManager()
+            new DirectoriesManager()
         );
 
         app.Run(args);
