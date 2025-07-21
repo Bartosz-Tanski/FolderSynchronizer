@@ -4,20 +4,24 @@ namespace FolderSynchronizer.FileSystem;
 
 public class ContentManager : IContentManager
 {
-    private readonly List<string> _allDirectories = [];
-    
     public string[] GetAllDirectoriesPaths(string path)
     {
-        var allDirectories = Directory.GetDirectories(path);
+        var result = new List<string>();
         
-        foreach (var directory in allDirectories)
+        GetDirectories(path, result);
+        
+        return result.ToArray();
+    }
+    
+    private void GetDirectories(string currentPath, List<string> outputList)
+    {
+        string[] innerDirectories = Directory.GetDirectories(currentPath);
+        
+        foreach (var directory in innerDirectories)
         {
-            _allDirectories.Add(directory);
-            
-            GetAllDirectoriesPaths(directory);
+            outputList.Add(directory);
+            GetDirectories(directory, outputList);
         }
-
-        return _allDirectories.ToArray();
     }
 
     public void CreateDirectories(string sourcePath, string targetPath)
