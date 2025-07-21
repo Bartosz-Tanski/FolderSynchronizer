@@ -1,4 +1,5 @@
-﻿using FolderSynchronizer.Abstractions;
+﻿using System.Threading.Channels;
+using FolderSynchronizer.Abstractions;
 
 namespace FolderSynchronizer.FileSystem;
 
@@ -7,16 +8,16 @@ public class ContentManager : IContentManager
     public string[] GetAllDirectoriesPaths(string path)
     {
         var result = new List<string>();
-        
+
         GetDirectories(path, result);
-        
+
         return result.ToArray();
     }
-    
+
     private void GetDirectories(string currentPath, List<string> outputList)
     {
         var innerDirectories = Directory.GetDirectories(currentPath);
-        
+
         foreach (var directory in innerDirectories)
         {
             outputList.Add(directory);
@@ -39,26 +40,36 @@ public class ContentManager : IContentManager
         var sourceFiles = GetAllFilesPaths(sourcePath);
         var replicaFiles = GetAllFilesPaths(replicaPath);
 
-        var sourceFilesNames = sourceFiles.Select(Path.GetFileName);
-        var replicaFilesNames = replicaFiles.Select(Path.GetFileName);
+        var sourceFileNames = sourceFiles.Select(Path.GetFileName).ToList();
+        var replicaFileNames = replicaFiles.Select(Path.GetFileName).ToList();
 
         if (sourceFiles.Length > replicaFiles.Length)
         {
-            var excessFilesInSource = sourceFilesNames.Except(replicaFilesNames);
+            var missingFileNamesInReplica = sourceFileNames.Except(replicaFileNames);
 
-            foreach (var file in excessFilesInSource)
+            var filesToCopy = sourceFiles
+                .Where(file => missingFileNamesInReplica.Contains(Path.GetFileName(file)));
+        
+            foreach (var sourceFilePath in filesToCopy)
             {
-                Console.WriteLine("I should create file: " + file);   
-            }
+                var relativePath = Path.GetRelativePath(sourcePath, sourceFilePath);
+        
+                var targetFilePath = Path.Combine(replicaPath, relativePath);
 
-            return;
+                Console.WriteLine($"Copy: {sourceFilePath} file to: {targetFilePath}"); // TODO: Add real logging
+                File.Copy(sourceFilePath, targetFilePath);
+            }
         }
 
-        var excessFileInReplica = replicaFilesNames.Except(sourceFilesNames);
+        var excessFileNamesInReplica = replicaFileNames.Except(sourceFileNames);
 
-        foreach (var file in excessFileInReplica)
+        var replicaFilesToDeletePaths = replicaFiles
+            .Where(file => excessFileNamesInReplica.Contains(Path.GetFileName(file)));
+        
+        foreach (var replicaFilePath in replicaFilesToDeletePaths)
         {
-            Console.WriteLine("I should delete: " + file);
+            Console.WriteLine("Deleting: " + replicaFilePath); // TODO: Add real logging
+            File.Delete(replicaFilePath);
         }
     }
 
@@ -81,7 +92,7 @@ public class ContentManager : IContentManager
     {
         var allDirectories = GetAllDirectoriesPaths(path);
         var allFiles = Directory.GetFiles(path).Select(file => file).ToList();
-        
+
         allFiles.AddRange(allDirectories.SelectMany(Directory.GetFiles));
 
         return allFiles.ToArray();
