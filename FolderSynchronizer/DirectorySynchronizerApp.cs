@@ -6,16 +6,16 @@ public class DirectorySynchronizerApp
 {
     private readonly IArgumentsValidator _argumentsValidator;
     private readonly IUserInterface _userInterface;
-    private readonly IDirectoryContentManager _directoryContentManager;
+    private readonly IContentManager _contentManager;
 
     public DirectorySynchronizerApp(
         IArgumentsValidator argumentsValidator, 
         IUserInterface userInterface, 
-        IDirectoryContentManager directoryContentManager)
+        IContentManager contentManager)
     {
         _argumentsValidator = argumentsValidator;
         _userInterface = userInterface;
-        _directoryContentManager = directoryContentManager;
+        _contentManager = contentManager;
     }
 
     public void Run(string[] args)
@@ -26,21 +26,6 @@ public class DirectorySynchronizerApp
         var replicaDirectory = args[1];
         var interval = int.Parse(args[2]);
         var logFilePath = args[3];
-
-        var dirs = _directoryContentManager.GetAllDirectoriesPaths(sourceDirectory);
-        var files = _directoryContentManager.GetAllFilesPaths(sourceDirectory);
-
-        foreach (var dir in dirs)
-        {
-            Console.WriteLine(dir);
-        }
-
-        Console.WriteLine("\n\n");
-
-        foreach (var f in files)
-        {
-            Console.WriteLine(f);
-        }
 
         // BeginSynchronization(sourceDirectory, replicaDirectory, interval, logFilePath);
     }
@@ -97,10 +82,10 @@ public class DirectorySynchronizerApp
             var targetFilePath = Path.Combine(replicaDirectory, Path.GetFileName(sourceFilePath));
 
             // if (!File.Exists(targetFilePath))
-                // _directoryContentManager.CopyFile(sourceFilePath, targetFilePath);
+                // _contentManager.CopyFile(sourceFilePath, targetFilePath);
         }
 
-        _directoryContentManager.CreateDirectories(sourceDirectory, replicaDirectory);
+        _contentManager.CreateDirectories(sourceDirectory, replicaDirectory);
 
         Console.WriteLine("Press CTRL + C to stop synchronization...");
     }

@@ -4,46 +4,50 @@ namespace FolderSynchronizer.FileSystem;
 
 public class DirectoryMonitor : IDirectoryMonitor
 {
-    private readonly IDirectoryContentManager _directoryContentManager;
+    private readonly IContentManager _contentManager;
+    private readonly IContentInspector _contentInspector;
     private readonly IUserInterface _userInterface;
 
-    public DirectoryMonitor(IDirectoryContentManager directoryContentManager, IUserInterface userInterface)
+    public DirectoryMonitor(IContentManager contentManager, 
+        IUserInterface userInterface, 
+        IContentInspector contentInspector)
     {
-        _directoryContentManager = directoryContentManager;
+        _contentManager = contentManager;
         _userInterface = userInterface;
+        _contentInspector = contentInspector;
     }
 
     public void Monitor(string sourcePath, string replicaPath)
     {
-        // if (!HasSameContentSizes(sourcePath, replicaPath))
-        // {
-        //     RemoveContentSizeMismatch(sourcePath, replicaPath);
-        //     return;
-        // }
-        //
-        // if (!HasMatchingTimestamps(sourcePath, replicaPath))
-        // {
-        //     RemoveContentTimestampMismatch(sourcePath, replicaPath);
-        //     return;
-        // }
-        //
-        // if (!HasSameContentCount(sourcePath, replicaPath))
-        // {
-        //     EqualizeContentCount(sourcePath, replicaPath);
-        //     return;
-        // }
-        //
-        // if (!HasMatchingContentStructure(sourcePath, replicaPath))
-        // {
-        //     RemoveContentStructureMismactch(sourcePath, replicaPath);
-        //     return;
-        // }
-        //
-        // if (!IsContentIntegral(sourcePath, replicaPath))
-        // {
-        //     RemoveNonIntegralContent(sourcePath, replicaPath);
-        //     return;
-        // }
+        if (!_contentInspector.HasSameContentSizes(sourcePath, replicaPath))
+        {
+            _contentManager.RemoveContentSizeMismatch(sourcePath, replicaPath);
+            return;
+        }
+        
+        if (!_contentInspector.HasMatchingTimestamps(sourcePath, replicaPath))
+        {
+            _contentManager.RemoveContentTimestampMismatch(sourcePath, replicaPath);
+            return;
+        }
+        
+        if (!_contentInspector.HasSameContentCount(sourcePath, replicaPath))
+        {
+            _contentManager.EqualizeContentCount(sourcePath, replicaPath);
+            return;
+        }
+        
+        if (!_contentInspector.HasMatchingContentStructure(sourcePath, replicaPath))
+        {
+            _contentManager.RemoveContentStructureMismactch(sourcePath, replicaPath);
+            return;
+        }
+        
+        if (!_contentInspector.IsContentIntegral(sourcePath, replicaPath))
+        {
+            _contentManager.RemoveNonIntegralContent(sourcePath, replicaPath);
+            return;
+        }
 
         _userInterface.DisplayMessage("Directories contains the same files", ConsoleColor.DarkGreen);
     }
