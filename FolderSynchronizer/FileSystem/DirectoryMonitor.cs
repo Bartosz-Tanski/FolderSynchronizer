@@ -19,6 +19,12 @@ public class DirectoryMonitor : IDirectoryMonitor
 
     public void Monitor(string sourcePath, string replicaPath)
     {
+        if (!_contentInspector.HasSameContentCount(sourcePath, replicaPath))
+        {
+            _contentManager.EqualizeContentCount(sourcePath, replicaPath);
+            return;
+        }
+        
         if (!_contentInspector.HasSameContentSizes(sourcePath, replicaPath))
         {
             _contentManager.RemoveContentSizeMismatch(sourcePath, replicaPath);
@@ -28,12 +34,6 @@ public class DirectoryMonitor : IDirectoryMonitor
         if (!_contentInspector.HasMatchingTimestamps(sourcePath, replicaPath))
         {
             _contentManager.RemoveContentTimestampMismatch(sourcePath, replicaPath);
-            return;
-        }
-        
-        if (!_contentInspector.HasSameContentCount(sourcePath, replicaPath))
-        {
-            _contentManager.EqualizeContentCount(sourcePath, replicaPath);
             return;
         }
         
