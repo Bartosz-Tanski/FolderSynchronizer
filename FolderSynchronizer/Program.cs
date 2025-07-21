@@ -11,8 +11,7 @@ public static class Program
         var app = new DirectorySynchronizerApp(
             new ArgumentsValidator(),
             new ConsoleUserInterface(),
-            new FilesManager(),
-            new DirectoriesManager()
+            new DirectoryContentContentManager()
         );
 
         app.Run(args);

@@ -6,19 +6,16 @@ public class DirectorySynchronizerApp
 {
     private readonly IArgumentsValidator _argumentsValidator;
     private readonly IUserInterface _userInterface;
-    private readonly IFilesManager _filesManager;
-    private readonly IDirectoriesManager _directoriesManager;
+    private readonly IDirectoryContentManager _directoryContentManager;
 
     public DirectorySynchronizerApp(
         IArgumentsValidator argumentsValidator, 
         IUserInterface userInterface, 
-        IFilesManager filesManager, 
-        IDirectoriesManager directoriesManager)
+        IDirectoryContentManager directoryContentManager)
     {
         _argumentsValidator = argumentsValidator;
         _userInterface = userInterface;
-        _filesManager = filesManager;
-        _directoriesManager = directoriesManager;
+        _directoryContentManager = directoryContentManager;
     }
 
     public void Run(string[] args)
@@ -30,7 +27,22 @@ public class DirectorySynchronizerApp
         var interval = int.Parse(args[2]);
         var logFilePath = args[3];
 
-        BeginSynchronization(sourceDirectory, replicaDirectory, interval, logFilePath);
+        var dirs = _directoryContentManager.GetAllDirectoriesPaths(sourceDirectory);
+        var files = _directoryContentManager.GetAllFilesPaths(sourceDirectory);
+
+        foreach (var dir in dirs)
+        {
+            Console.WriteLine(dir);
+        }
+
+        Console.WriteLine("\n\n");
+
+        foreach (var f in files)
+        {
+            Console.WriteLine(f);
+        }
+
+        // BeginSynchronization(sourceDirectory, replicaDirectory, interval, logFilePath);
     }
 
     private void BeginSynchronization(string sourceDirectory, string replicaDirectory, int interval, string logFilePath)
@@ -84,16 +96,12 @@ public class DirectorySynchronizerApp
         {
             var targetFilePath = Path.Combine(replicaDirectory, Path.GetFileName(sourceFilePath));
 
-            if (!File.Exists(targetFilePath))
-                _filesManager.CopyFile(sourceFilePath, targetFilePath);
+            // if (!File.Exists(targetFilePath))
+                // _directoryContentManager.CopyFile(sourceFilePath, targetFilePath);
         }
 
-        _directoriesManager.CreateDirectories(sourceDirectory, replicaDirectory);
+        _directoryContentManager.CreateDirectories(sourceDirectory, replicaDirectory);
 
         Console.WriteLine("Press CTRL + C to stop synchronization...");
     }
-    
-    
-
-   
 }

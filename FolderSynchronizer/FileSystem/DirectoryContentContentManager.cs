@@ -2,8 +2,49 @@
 
 namespace FolderSynchronizer.FileSystem;
 
-public class DirectoriesManager : IDirectoriesManager
+public class DirectoryContentContentManager : IDirectoryContentManager
 {
+    private readonly List<string> _allDirectories = [];
+    
+    public string[] GetAllDirectoriesPaths(string path)
+    {
+        var allDirectories = Directory.GetDirectories(path);
+        
+        foreach (var directory in allDirectories)
+        {
+            _allDirectories.Add(directory);
+            
+            // if (Directory.GetDirectories(directory).Length > 0)
+            // {
+                GetAllDirectoriesPaths(directory);
+            // }
+        }
+
+        return _allDirectories.ToArray();
+    }
+    
+    public string[] GetAllFilesPaths(string path)
+    {
+        var allDirectories = GetAllDirectoriesPaths(path);
+        var allFiles = Directory.GetFiles(path).Select(file => file).ToList();
+        
+        allFiles.AddRange(allDirectories.SelectMany(Directory.GetFiles));
+
+        return allFiles.ToArray();
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public void CreateDirectories(string sourcePath, string targetPath)
     {
         var innerSourceDirectories = Directory.GetDirectories(sourcePath);
@@ -14,7 +55,7 @@ public class DirectoriesManager : IDirectoriesManager
 
             if (!Directory.Exists(combinedTargetPath))
             {
-                _userInterface.DisplayMessage($"Creating directory at: {combinedTargetPath}", ConsoleColor.DarkGray);
+                // _userInterface.DisplayMessage($"Creating directory at: {combinedTargetPath}", ConsoleColor.DarkGray);
                 Directory.CreateDirectory(combinedTargetPath);
             }
 
@@ -27,7 +68,7 @@ public class DirectoriesManager : IDirectoriesManager
 
                     if (!File.Exists(combinedTargetPathForFile))
                     {
-                        CopyFile(innerSourceFile, combinedTargetPathForFile);
+                        // CopyFile(innerSourceFile, combinedTargetPathForFile);
                     }
                 }
             }
@@ -38,4 +79,6 @@ public class DirectoriesManager : IDirectoriesManager
             }
         }
     }
+
+
 }
