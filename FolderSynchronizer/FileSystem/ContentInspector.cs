@@ -44,11 +44,6 @@ public class ContentInspector : IContentInspector
         return sourceDirectories.Length == replicaDirectories.Length;
     }
 
-    public bool HasMatchingContentStructure(string sourcePath, string replicaPath)
-    {
-        throw new NotImplementedException();
-    }
-
     public bool IsContentIntegral(string sourcePath, string replicaPath)
     {
         throw new NotImplementedException();

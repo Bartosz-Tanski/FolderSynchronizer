@@ -37,11 +37,6 @@ public class DirectoryMonitor : IDirectoryMonitor
             return;
         }
         
-        if (!_contentInspector.HasMatchingContentStructure(sourcePath, replicaPath))
-        {
-            _contentManager.RemoveContentStructureMismatch(sourcePath, replicaPath);
-            return;
-        }
         
         if (!_contentInspector.IsContentIntegral(sourcePath, replicaPath))
         {
