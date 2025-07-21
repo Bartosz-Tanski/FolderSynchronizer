@@ -36,7 +36,12 @@ public class DirectoryMonitor : IDirectoryMonitor
             _contentManager.RemoveContentSizeMismatch(sourcePath, replicaPath);
             return;
         }
-        
+
+        if (!_contentInspector.HasSameContentNames(sourcePath, replicaPath))
+        {
+            _contentManager.RenameContent(sourcePath, replicaPath);
+            return;
+        }
         
         if (!_contentInspector.IsContentIntegral(sourcePath, replicaPath))
         {
@@ -44,7 +49,7 @@ public class DirectoryMonitor : IDirectoryMonitor
             return;
         }
 
-        _userInterface.DisplayMessage("Directories contains the same files", ConsoleColor.DarkGreen);
+        _userInterface.DisplayMessage("Directories are synchronized", ConsoleColor.DarkGreen);
     }
 
     

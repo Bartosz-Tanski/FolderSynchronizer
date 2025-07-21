@@ -6,4 +6,5 @@ public interface IContentInspector
     bool HasSameFileCount(string sourcePath, string replicaPath);
     bool HasSameDirectoryCount(string sourcePath, string replicaPath);
     bool IsContentIntegral(string sourcePath, string replicaPath);
+    bool HasSameContentNames(string sourcePath, string replicaPath);
 }

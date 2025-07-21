@@ -136,6 +136,11 @@ public class ContentManager : IContentManager
         throw new NotImplementedException();
     }
 
+    public void RenameContent(string sourcePath, string replicaPath)
+    {
+        throw new NotImplementedException();
+    }
+
     public string[] GetAllFilesPaths(string path)
     {
         var allDirectories = GetAllDirectoriesPaths(path);
