@@ -14,10 +14,7 @@ public class DirectoryContentContentManager : IDirectoryContentManager
         {
             _allDirectories.Add(directory);
             
-            // if (Directory.GetDirectories(directory).Length > 0)
-            // {
-                GetAllDirectoriesPaths(directory);
-            // }
+            GetAllDirectoriesPaths(directory);
         }
 
         return _allDirectories.ToArray();
