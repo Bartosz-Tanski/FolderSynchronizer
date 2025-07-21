@@ -1,9 +1,12 @@
-﻿using FolderSynchronizer.Abstractions;
+﻿using System.Threading.Channels;
+using FolderSynchronizer.Abstractions;
 
 namespace FolderSynchronizer.FileSystem;
 
 public class ContentManager : IContentManager
 {
+    private string GetNameOnly(string path) => Path.GetFileName(path);
+    
     public string[] GetAllDirectoriesPaths(string path)
     {
         var result = new List<string>();
@@ -24,11 +27,6 @@ public class ContentManager : IContentManager
         }
     }
 
-    public void CreateDirectories(string sourcePath, string targetPath)
-    {
-        throw new NotImplementedException();
-    }
-
     public void RemoveContentSizeMismatch(string sourcePath, string replicaPath)
     {
         throw new NotImplementedException();
@@ -41,7 +39,27 @@ public class ContentManager : IContentManager
 
     public void EqualizeContentCount(string sourcePath, string replicaPath)
     {
-        throw new NotImplementedException();
+        var sourceFilesNames = GetAllFilesPaths(sourcePath).Select(GetNameOnly).ToArray();
+        var replicaFilesNames = GetAllFilesPaths(replicaPath).Select(GetNameOnly).ToArray();
+
+        if (sourceFilesNames.Length > replicaFilesNames.Length)
+        {
+            var excessFilesInSource = sourceFilesNames.Except(replicaFilesNames);
+
+            foreach (var file in excessFilesInSource)
+            {
+                Console.WriteLine("I should create file: " + file);   
+            }
+
+            return;
+        }
+
+        var excessFileInReplica = replicaFilesNames.Except(sourceFilesNames);
+
+        foreach (var file in excessFileInReplica)
+        {
+            Console.WriteLine("I should delete: " + file);
+        }
     }
 
     public void RemoveContentStructureMismactch(string sourcePath, string replicaPath)
