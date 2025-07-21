@@ -1,9 +1,21 @@
-﻿using FolderSynchronizer.Abstractions;
+﻿using System.Collections;
+using FolderSynchronizer.Abstractions;
 
 namespace FolderSynchronizer.FileSystem;
 
 public class ContentManager : IContentManager
 {
+    public void RemoveAllFiles(string path)
+    {
+        var allFiles = GetAllFilesPaths(path);
+
+        foreach (var file in allFiles)
+        {
+            Console.WriteLine("Remove: " + file);
+            File.Delete(file);
+        }
+    }
+    
     public string[] GetAllFilesPaths(string path)
     {
         var allDirectories = GetAllDirectoriesPaths(path);
@@ -108,13 +120,14 @@ public class ContentManager : IContentManager
 
         var excessDirectoriesNamesInReplica = replicaDirectoriesNames.Except(sourceDirectoriesNames);
 
-        var replicaDirectoriesToDeletePaths = replicaDirectories
-            .Where(file => excessDirectoriesNamesInReplica.Contains(Path.GetFileName(file)));
+        var directoriesToRemove = replicaDirectories
+            .Where(file => excessDirectoriesNamesInReplica.Contains(Path.GetFileName(file))).ToArray();
 
-        foreach (var directoriesToDelete in replicaDirectoriesToDeletePaths)
+        for (int i = directoriesToRemove.Length - 1; i >= 0; i--)
         {
-            Console.WriteLine("Deleting: " + directoriesToDelete); // TODO: Add real logging
-            Directory.Delete(directoriesToDelete);
+            Console.WriteLine("Deleting: " + directoriesToRemove[i]);
+            RemoveAllFiles(directoriesToRemove[i]);
+            Directory.Delete(directoriesToRemove[i]);
         }
     }
 
