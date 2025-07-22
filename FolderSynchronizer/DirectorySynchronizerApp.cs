@@ -49,7 +49,10 @@ public class DirectorySynchronizerApp
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"This will be logged: {ex} in {logFilePath}"); // TODO: Implement logging system
+                    _userInterface.DisplayMessage($"Error occured: {ex.Message}", ConsoleColor.DarkRed);
+                    _userInterface.DisplayMessage($"For more information check log file: {logFilePath}", ConsoleColor.DarkGray);
+                    
+                    Environment.Exit(1);                
                 }
             },
             state: null,
