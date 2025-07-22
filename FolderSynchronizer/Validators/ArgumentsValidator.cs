@@ -55,6 +55,5 @@ public class ArgumentsValidator : IArgumentsValidator
         {
             throw new FileNotFoundException($"Log file: {arg} doesn't exist.");
         }
-
     }
 }
