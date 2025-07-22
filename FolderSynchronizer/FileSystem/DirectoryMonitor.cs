@@ -44,9 +44,9 @@ public class DirectoryMonitor : IDirectoryMonitor
             _contentManager.RemoveFiles(replicaInvalidFileNames);
         }
 
-        if (!_contentInspector.HasSameDirectoriesNames(sourcePath, replicaPath, out var replicaInvalidDirectoriesNames))
+        if (!_contentInspector.HasSameDirectoriesNames(sourcePath, replicaPath))
         {
-            _contentManager.RemoveDirectories(replicaInvalidDirectoriesNames);
+            _contentManager.RemoveDirectories(sourcePath, replicaPath);
         }
 
         if (!_contentInspector.IsContentIntegral(sourcePath, replicaPath, out var notValidReplicaFiles))

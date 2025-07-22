@@ -99,10 +99,7 @@ public class ContentManager : IContentManager
             return;
         }
 
-        var missingDirectories = GetMissingContent(replicaPath, sourcePath, GetAllDirectoriesPaths)
-            .OrderByDescending(dir => dir.Count(separator => separator == Path.DirectorySeparatorChar));
-
-        RemoveDirectories(missingDirectories);
+        RemoveDirectories(sourcePath, replicaPath);
     }
 
     private void CreateMissingDirectories(string sourcePath, string replicaPath)
@@ -114,14 +111,16 @@ public class ContentManager : IContentManager
             CreateDirectory(targetDirectoryPath);
         }
     }
-
-    public void RemoveDirectories(IEnumerable<string> directoriesToRemove)
+    
+    public void RemoveDirectories(string sourcePath, string replicaPath)
     {
-        foreach (var directory in directoriesToRemove
-                     .OrderByDescending(dir => dir.Count(ch => ch == Path.DirectorySeparatorChar)))
+        var missingDirectories = GetMissingContent(replicaPath, sourcePath, GetAllDirectoriesPaths)
+            .OrderByDescending(dir => dir.Count(separator => separator == Path.DirectorySeparatorChar));
+    
+        foreach (var directory in missingDirectories)
         {
             RemoveFiles(GetAllFilesPaths(directory));
-
+    
             if (Directory.Exists(directory))
             {
                 Console.WriteLine("Remove directory: " + directory);

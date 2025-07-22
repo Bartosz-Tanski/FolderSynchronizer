@@ -108,6 +108,9 @@ public class ContentInspector : IContentInspector
 
         notValidReplicaFiles = [];
 
+        if (allSourceFiles.Length != allReplicaFiles.Length)
+            return false;
+
         for (int i = 0; i < allSourceFiles.Length; i++)
         {
             var sourceFileInfo = new FileInfo(allSourceFiles[i]);
@@ -123,14 +126,10 @@ public class ContentInspector : IContentInspector
         return result;
     }
     
-    public bool HasSameDirectoriesNames(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
+    public bool HasSameDirectoriesNames(string sourcePath, string replicaPath)
     {
-        var result = true;
-        
         var allSourceFiles = _contentManager.GetAllDirectoriesPaths(sourcePath);
         var allReplicaFiles = _contentManager.GetAllDirectoriesPaths(replicaPath);
-
-        notValidReplicaFiles = [];
 
         for (int i = 0; i < allSourceFiles.Length; i++)
         {
@@ -139,11 +138,10 @@ public class ContentInspector : IContentInspector
 
             if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
             {
-                notValidReplicaFiles.Add(allReplicaFiles[i]);
-                result = false;
+                return false;
             }
         }
 
-        return result;
+        return true;
     }
 }
