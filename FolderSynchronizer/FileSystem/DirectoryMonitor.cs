@@ -19,34 +19,34 @@ public class DirectoryMonitor : IDirectoryMonitor
 
     public void Monitor(string sourcePath, string replicaPath)
     {
+        if (!_contentInspector.DoesReplicaDirectoryExist(replicaPath))
+        {
+            _contentManager.CreateDirectory(replicaPath);
+        }
+        
         if (!_contentInspector.HasSameDirectoryCount(sourcePath, replicaPath))
         {
             _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
-            return;
         }
         
         if (!_contentInspector.HasSameFileCount(sourcePath, replicaPath))
         {
             _contentManager.EqualizeFileCount(sourcePath, replicaPath);
-            return;
         }
         
         if (!_contentInspector.HasSameContentSizes(sourcePath, replicaPath, out var replicaFilesWithWrongSizes))
         {
             _contentManager.RemoveFiles(replicaFilesWithWrongSizes);
-            return;
         }
         
         if (!_contentInspector.HasSameFilesNames(sourcePath, replicaPath, out var replicaFilesWithWrongNames))
         {
             _contentManager.RemoveFiles(replicaFilesWithWrongNames);
-            return;
         }
         
         if (!_contentInspector.IsContentIntegral(sourcePath, replicaPath, out var notValidReplicaFiles))
         {
             _contentManager.RemoveFiles(notValidReplicaFiles);
-            return;
         }
 
         _userInterface.DisplayMessage("Directories are synchronized", ConsoleColor.DarkGreen);
