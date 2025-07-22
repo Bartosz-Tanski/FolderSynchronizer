@@ -36,12 +36,20 @@ public class ContentManager : IContentManager
 
     private string[] GetMissingContent(string firstPath, string secondPath, Func<string, string[]> getContent)
     {
-        var firstPathContentNames = getContent(firstPath).Select(Path.GetFileName);
-        var secondPathContentNames = getContent(secondPath).Select(Path.GetFileName);
+        var firstPathContent = getContent(firstPath);
+        var secondPathContent = getContent(secondPath);
 
-        var missingContentNames = firstPathContentNames.Except(secondPathContentNames);
+        var firstPathRelativePath = firstPathContent
+            .Select(fullPath => Path.GetRelativePath(firstPath, fullPath));
 
-        return getContent(firstPath).Where(file => missingContentNames.Contains(Path.GetFileName(file))).ToArray();
+        var secondPathRelativePath = secondPathContent
+            .Select(fullPath => Path.GetRelativePath(secondPath, fullPath));
+
+        var missingContentRelativePath = firstPathRelativePath.Except(secondPathRelativePath);
+
+        return firstPathContent
+            .Where(fullPath => missingContentRelativePath.Contains(Path.GetRelativePath(firstPath, fullPath)))
+            .ToArray();
     }
 
     private static string GetTargetPath(string sourcePath, string replicaPath, string content)
