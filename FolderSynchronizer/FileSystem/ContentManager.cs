@@ -56,7 +56,7 @@ public class ContentManager : IContentManager
     {
         var relativePath = Path.GetRelativePath(sourcePath, content!);
         var targetDirectoryPath = Path.Combine(replicaPath, relativePath);
-        
+
         return targetDirectoryPath;
     }
 
@@ -76,7 +76,7 @@ public class ContentManager : IContentManager
         foreach (var file in GetMissingContent(sourcePath, replicaPath, GetAllFilesPaths))
         {
             var targetFilePath = GetTargetPath(sourcePath, replicaPath, file!);
-        
+
             Console.WriteLine($"Create: {targetFilePath}");
             File.Copy(file!, targetFilePath);
         }
@@ -99,7 +99,10 @@ public class ContentManager : IContentManager
             return;
         }
 
-        RemoveExcessDirectories(sourcePath, replicaPath);
+        var missingDirectories = GetMissingContent(replicaPath, sourcePath, GetAllDirectoriesPaths)
+            .OrderByDescending(dir => dir.Count(separator => separator == Path.DirectorySeparatorChar));
+
+        RemoveDirectories(missingDirectories);
     }
 
     private void CreateMissingDirectories(string sourcePath, string replicaPath)
@@ -112,12 +115,10 @@ public class ContentManager : IContentManager
         }
     }
 
-    private void RemoveExcessDirectories(string sourcePath, string replicaPath)
+    public void RemoveDirectories(IEnumerable<string> directoriesToRemove)
     {
-        var missingDirectories = GetMissingContent(replicaPath, sourcePath, GetAllDirectoriesPaths)
-            .OrderByDescending(dir => dir.Count(separator => separator == Path.DirectorySeparatorChar));
-
-        foreach (var directory in missingDirectories)
+        foreach (var directory in directoriesToRemove
+                     .OrderByDescending(dir => dir.Count(ch => ch == Path.DirectorySeparatorChar)))
         {
             RemoveFiles(GetAllFilesPaths(directory));
 
