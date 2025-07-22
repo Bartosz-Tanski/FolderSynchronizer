@@ -69,6 +69,9 @@ public class ContentInspector : IContentInspector
         
         for (int i = 0; i < allSourceFiles.Length; i++)
         {
+            if (allSourceFiles.Length != allReplicaFiles.Length)
+                continue;
+            
             var sourceFileHash = ComputeMd5(allSourceFiles[i]);
             var replicaFileHash = ComputeMd5(allReplicaFiles[i]);
         
@@ -109,6 +112,30 @@ public class ContentInspector : IContentInspector
         {
             var sourceFileInfo = new FileInfo(allSourceFiles[i]);
             var replicaFileInfo = new FileInfo(allReplicaFiles[i]);
+
+            if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
+            {
+                notValidReplicaFiles.Add(allReplicaFiles[i]);
+                result = false;
+            }
+        }
+
+        return result;
+    }
+    
+    public bool HasSameDirectoriesNames(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
+    {
+        var result = true;
+        
+        var allSourceFiles = _contentManager.GetAllDirectoriesPaths(sourcePath);
+        var allReplicaFiles = _contentManager.GetAllDirectoriesPaths(replicaPath);
+
+        notValidReplicaFiles = [];
+
+        for (int i = 0; i < allSourceFiles.Length; i++)
+        {
+            var sourceFileInfo = new DirectoryInfo(allSourceFiles[i]);
+            var replicaFileInfo = new DirectoryInfo(allReplicaFiles[i]);
 
             if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
             {
