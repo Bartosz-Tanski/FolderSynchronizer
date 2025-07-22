@@ -13,12 +13,9 @@ public class ContentInspector : IContentInspector
         _contentManager = contentManager;
     }
 
-    public bool HasSameFileCount(string sourcePath, string replicaPath)
+    public bool DoesReplicaDirectoryExist(string replicaPath)
     {
-        var sourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
-        var replicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
-    
-        return sourceFiles.Length == replicaFiles.Length;
+        return Directory.Exists(replicaPath);
     }
     
     public bool HasSameDirectoryCount(string sourcePath, string replicaPath)
@@ -28,12 +25,15 @@ public class ContentInspector : IContentInspector
     
         return sourceDirectories.Length == replicaDirectories.Length;
     }
-
-    public bool DoesReplicaDirectoryExist(string replicaPath)
+    
+    public bool HasSameFileCount(string sourcePath, string replicaPath)
     {
-        return Directory.Exists(replicaPath);
+        var sourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
+        var replicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
+    
+        return sourceFiles.Length == replicaFiles.Length;
     }
-
+    
     public bool HasSameContentSizes(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
     {
         var result = true;
@@ -58,6 +58,52 @@ public class ContentInspector : IContentInspector
         return result;
     }
 
+    public bool HasSameFilesNames(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
+    {
+        var result = true;
+        
+        var allSourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
+        var allReplicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
+
+        notValidReplicaFiles = [];
+
+        if (allSourceFiles.Length != allReplicaFiles.Length)
+            return false;
+
+        for (int i = 0; i < allSourceFiles.Length; i++)
+        {
+            var sourceFileInfo = new FileInfo(allSourceFiles[i]);
+            var replicaFileInfo = new FileInfo(allReplicaFiles[i]);
+
+            if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
+            {
+                notValidReplicaFiles.Add(allReplicaFiles[i]);
+                result = false;
+            }
+        }
+
+        return result;
+    }
+
+    public bool HasSameDirectoriesNames(string sourcePath, string replicaPath)
+    {
+        var allSourceFiles = _contentManager.GetAllDirectoriesPaths(sourcePath);
+        var allReplicaFiles = _contentManager.GetAllDirectoriesPaths(replicaPath);
+
+        for (int i = 0; i < allSourceFiles.Length; i++)
+        {
+            var sourceFileInfo = new DirectoryInfo(allSourceFiles[i]);
+            var replicaFileInfo = new DirectoryInfo(allReplicaFiles[i]);
+
+            if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
     public bool IsContentIntegral(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
     {
         var result = true;
@@ -99,49 +145,4 @@ public class ContentInspector : IContentInspector
         return stringBuilder.ToString();
     }
 
-    public bool HasSameFilesNames(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
-    {
-        var result = true;
-        
-        var allSourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
-        var allReplicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
-
-        notValidReplicaFiles = [];
-
-        if (allSourceFiles.Length != allReplicaFiles.Length)
-            return false;
-
-        for (int i = 0; i < allSourceFiles.Length; i++)
-        {
-            var sourceFileInfo = new FileInfo(allSourceFiles[i]);
-            var replicaFileInfo = new FileInfo(allReplicaFiles[i]);
-
-            if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
-            {
-                notValidReplicaFiles.Add(allReplicaFiles[i]);
-                result = false;
-            }
-        }
-
-        return result;
-    }
-    
-    public bool HasSameDirectoriesNames(string sourcePath, string replicaPath)
-    {
-        var allSourceFiles = _contentManager.GetAllDirectoriesPaths(sourcePath);
-        var allReplicaFiles = _contentManager.GetAllDirectoriesPaths(replicaPath);
-
-        for (int i = 0; i < allSourceFiles.Length; i++)
-        {
-            var sourceFileInfo = new DirectoryInfo(allSourceFiles[i]);
-            var replicaFileInfo = new DirectoryInfo(allReplicaFiles[i]);
-
-            if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }
