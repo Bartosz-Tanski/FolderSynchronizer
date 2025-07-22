@@ -7,5 +7,5 @@ public interface IContentManager
     void EqualizeFileCount(string sourcePath, string replicaPath);
     void EqualizeDirectoryCount(string sourcePath, string replicaPath);
     void RemoveFiles(IEnumerable<string> notValidReplicaFiles);
-    void CreateDirectory(string replicaPath);
+    void CreateDirectory(string path);
 }

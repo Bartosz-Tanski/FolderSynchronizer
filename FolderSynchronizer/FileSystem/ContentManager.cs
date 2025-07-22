@@ -130,9 +130,9 @@ public class ContentManager : IContentManager
         }
     }
 
-    public void CreateDirectory(string replicaPath)
+    public void CreateDirectory(string path)
     {
-        Console.WriteLine("Create: " + replicaPath);
-        Directory.CreateDirectory(replicaPath);
+        Console.WriteLine("Create: " + path);
+        Directory.CreateDirectory(path);
     }
 }
