@@ -29,6 +29,11 @@ public class ContentInspector : IContentInspector
         return sourceDirectories.Length == replicaDirectories.Length;
     }
 
+    public bool DoesReplicaDirectoryExist(string replicaPath)
+    {
+        return Directory.Exists(replicaPath);
+    }
+
     public bool HasSameContentSizes(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
     {
         var result = true;
