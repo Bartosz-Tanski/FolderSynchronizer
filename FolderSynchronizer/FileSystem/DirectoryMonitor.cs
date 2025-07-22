@@ -37,7 +37,7 @@ public class DirectoryMonitor : IDirectoryMonitor
             return;
         }
         
-        if (!_contentInspector.HasSameContentNames(sourcePath, replicaPath, out var replicaFilesWithWrongNames))
+        if (!_contentInspector.HasSameFilesNames(sourcePath, replicaPath, out var replicaFilesWithWrongNames))
         {
             _contentManager.RemoveFiles(replicaFilesWithWrongNames);
             return;
