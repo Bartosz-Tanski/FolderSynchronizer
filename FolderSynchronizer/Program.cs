@@ -14,6 +14,14 @@ public static class Program
         
         var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator(), userInterface);
 
-        app.Run(args);
+        try
+        {
+            app.Run(args);
+        }
+        catch (Exception ex)
+        {
+            userInterface.DisplayMessage(ex.Message, ConsoleColor.DarkRed);
+            userInterface.DisplayHelpMessage();
+        }
     }
 }
