@@ -54,6 +54,9 @@ public class DirectoryMonitor : IDirectoryMonitor
             _contentManager.RemoveFiles(notValidReplicaFiles);
         }
 
+        _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
+        _contentManager.EqualizeFileCount(sourcePath, replicaPath);
+
         _userInterface.DisplayMessage("Directories are synchronized", ConsoleColor.DarkGreen);
     }
 }
