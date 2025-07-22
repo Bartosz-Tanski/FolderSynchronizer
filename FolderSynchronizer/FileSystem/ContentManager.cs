@@ -48,9 +48,7 @@ public class ContentManager : IContentManager
     {
         var relativePath = Path.GetRelativePath(sourcePath, content!);
         var targetDirectoryPath = Path.Combine(replicaPath, relativePath);
-
-        Console.WriteLine($"Create: {targetDirectoryPath}");
-
+        
         return targetDirectoryPath;
     }
 
@@ -70,7 +68,8 @@ public class ContentManager : IContentManager
         foreach (var file in GetMissingContent(sourcePath, replicaPath, GetAllFilesPaths))
         {
             var targetFilePath = GetTargetPath(sourcePath, replicaPath, file!);
-
+        
+            Console.WriteLine($"Create: {targetFilePath}");
             File.Copy(file!, targetFilePath);
         }
     }
@@ -101,7 +100,7 @@ public class ContentManager : IContentManager
         {
             var targetDirectoryPath = GetTargetPath(sourcePath, replicaPath, directory!);
 
-            Directory.CreateDirectory(targetDirectoryPath);
+            CreateDirectory(targetDirectoryPath);
         }
     }
 
@@ -129,5 +128,11 @@ public class ContentManager : IContentManager
             Console.WriteLine("Remove file: " + file);
             File.Delete(file);
         }
+    }
+
+    public void CreateDirectory(string replicaPath)
+    {
+        Console.WriteLine("Create: " + replicaPath);
+        Directory.CreateDirectory(replicaPath);
     }
 }
