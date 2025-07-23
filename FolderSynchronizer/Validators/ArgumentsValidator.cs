@@ -12,7 +12,7 @@ public class ArgumentsValidator : IArgumentsValidator
         }
         
         ValidateSourceDirectoryArgument(args[0]);
-        ValidateReplicaDirectoryArgument(args[1]);
+        ValidateReplicaDirectoryArgument(args[1], args[0]);
         ValidateIntervalArgument(args[2]);
         ValidateLogFileArgument(args[3]);
     }
@@ -25,19 +25,22 @@ public class ArgumentsValidator : IArgumentsValidator
         }
     }
     
-    private void ValidateReplicaDirectoryArgument(string arg)
+    private void ValidateReplicaDirectoryArgument(string replicaDir, string sourceDir)
     {
-        if (Directory.Exists(arg))
+        if (replicaDir == sourceDir)
+            throw new IOException($"Replica directory: {replicaDir} cannot be the same as source directory.");
+        
+        if (Directory.Exists(replicaDir))
             return;
         
         try
         {
-            Directory.CreateDirectory(arg);
-            Directory.Delete(arg);
+            Directory.CreateDirectory(replicaDir);
+            Directory.Delete(replicaDir);
         }
         catch (Exception ex)
         {
-            throw new IOException($"Replica directory: {arg} cannot be created.", ex);
+            throw new IOException($"Replica directory: {replicaDir} cannot be created.", ex);
         }
     }
     
