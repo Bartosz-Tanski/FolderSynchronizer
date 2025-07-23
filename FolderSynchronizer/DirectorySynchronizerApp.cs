@@ -52,7 +52,7 @@ public class DirectorySynchronizerApp
                 {
                     Log.Fatal(ex, $"Error occured: {ex.Message}");
                     
-                    Environment.Exit(1);                
+                    Environment.Exit(2);                
                 }
             },
             state: null,

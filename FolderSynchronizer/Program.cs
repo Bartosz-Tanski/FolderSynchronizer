@@ -20,6 +20,8 @@ public static class Program
             var userInterface = new ConsoleUserInterface();
             userInterface.DisplayMessage(ex.Message, ConsoleColor.Red);
             userInterface.DisplayHelpMessage();
+            
+            Environment.Exit(1);
         }
     }
 }
