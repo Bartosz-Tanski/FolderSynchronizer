@@ -1,4 +1,6 @@
 ﻿using FolderSynchronizer.Abstractions;
+using FolderSynchronizer.Logger;
+using Serilog;
 
 namespace FolderSynchronizer;
 
@@ -6,16 +8,13 @@ public class DirectorySynchronizerApp
 {
     private readonly IDirectoryMonitor _monitor;
     private readonly IArgumentsValidator _argumentsValidator;
-    private readonly IUserInterface _userInterface;
 
     public DirectorySynchronizerApp(
         IDirectoryMonitor monitor, 
-        IArgumentsValidator argumentsValidator, 
-        IUserInterface userInterface)
+        IArgumentsValidator argumentsValidator)
     {
         _monitor = monitor;
         _argumentsValidator = argumentsValidator;
-        _userInterface = userInterface;
     }
 
     public void Run(string[] args)
@@ -27,6 +26,9 @@ public class DirectorySynchronizerApp
         var interval = int.Parse(args[2]);
         var logFilePath = args[3];
         
+        LoggerConfigurator.Configure(logFilePath);
+        
+        Log.Verbose("Press CTRL + C to stop synchronization...");
         BeginSynchronization(sourceDirectory, replicaDirectory, interval, logFilePath);
     }
 
@@ -44,13 +46,11 @@ public class DirectorySynchronizerApp
             {
                 try
                 {
-                    _userInterface.DisplayMessage("Press CTRL + C to stop synchronization...", ConsoleColor.Yellow);
                     _monitor.Monitor(sourceDirectory, replicaDirectory);
                 }
                 catch (Exception ex)
                 {
-                    _userInterface.DisplayMessage($"Error occured: {ex.Message}", ConsoleColor.DarkRed);
-                    _userInterface.DisplayMessage($"For more information check log file: {logFilePath}", ConsoleColor.DarkGray);
+                    Log.Fatal(ex, $"Error occured: {ex.Message}");
                     
                     Environment.Exit(1);                
                 }
@@ -63,7 +63,7 @@ public class DirectorySynchronizerApp
             .WaitHandle
             .WaitOne();
 
-        _userInterface.DisplayMessage("Directory synchronization stopped. (CTRL + C pressed).", ConsoleColor.Yellow);
+        Log.Information("Directory synchronization stopped. (CTRL + C pressed).");
         timer.Dispose();
     }
 }
