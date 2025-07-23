@@ -19,45 +19,62 @@ public class DirectoryMonitor : IDirectoryMonitor
 
     public void Monitor(string sourcePath, string replicaPath)
     {
+        var sourceDirectories = ReloadDirectories(sourcePath);
+        var replicaDirectories = ReloadDirectories(replicaPath);
+
+        var sourceFiles = ReloadFiles(sourcePath);
+        var replicaFiles = ReloadFiles(replicaPath);
+        
         if (!_contentInspector.DoesReplicaDirectoryExist(replicaPath))
         {
             _contentManager.CreateDirectory(replicaPath);
         }
 
-        if (!_contentInspector.HasSameDirectoryCount(sourcePath, replicaPath))
+        if (!_contentInspector.HasSameCount(sourceDirectories, replicaDirectories))
         {
             _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
+            sourceDirectories = ReloadDirectories(sourcePath);
+            replicaDirectories = ReloadDirectories(replicaPath);
         }
 
-        if (!_contentInspector.HasSameFileCount(sourcePath, replicaPath))
+        if (!_contentInspector.HasSameCount(sourceFiles, replicaFiles))
         {
             _contentManager.EqualizeFileCount(sourcePath, replicaPath);
+            sourceFiles = ReloadFiles(sourcePath);
+            replicaFiles = ReloadFiles(replicaPath);
         }
 
-        if (!_contentInspector.HasSameContentSizes(sourcePath, replicaPath, out var replicaInvalidFileSizes))
+        if (!_contentInspector.HasSameFileSizes(sourceFiles, replicaFiles, out var replicaInvalidFileSizes))
         {
             _contentManager.RemoveFiles(replicaInvalidFileSizes);
-            _contentManager.EqualizeFileCount(sourcePath, replicaPath);
+            sourceFiles = ReloadFiles(sourcePath);
+            replicaFiles = ReloadFiles(replicaPath);
         }
 
-        if (!_contentInspector.HasSameFilesNames(sourcePath, replicaPath, out var replicaInvalidFileNames))
+        if (!_contentInspector.HasSameNames(sourceFiles, replicaFiles, out var replicaInvalidFileNames))
         {
             _contentManager.RemoveFiles(replicaInvalidFileNames);
-            _contentManager.EqualizeFileCount(sourcePath, replicaPath);
+            sourceFiles = ReloadFiles(sourcePath);
+            replicaFiles = ReloadFiles(replicaPath);
         }
 
-        if (!_contentInspector.HasSameDirectoriesNames(sourcePath, replicaPath))
+        if (!_contentInspector.HasSameNames(sourceDirectories, replicaDirectories, out _))
         {
             _contentManager.RemoveDirectories(sourcePath, replicaPath);
-            _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
         }
 
-        if (!_contentInspector.IsContentIntegral(sourcePath, replicaPath, out var notValidReplicaFiles))
+        if (!_contentInspector.IsContentIntegral(sourceFiles, replicaFiles, out var notValidReplicaFiles))
         {
             _contentManager.RemoveFiles(notValidReplicaFiles);
-            _contentManager.EqualizeFileCount(sourcePath, replicaPath);
         }
+        
+        _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
+        _contentManager.EqualizeFileCount(sourcePath, replicaPath);
+
         
         _userInterface.DisplayMessage("Directories are synchronized", ConsoleColor.DarkGreen);
     }
+
+    private string[] ReloadFiles(string path) => _contentManager.GetAllFilesPaths(path);
+    private string[] ReloadDirectories(string path) => _contentManager.GetAllDirectoriesPaths(path);
 }
