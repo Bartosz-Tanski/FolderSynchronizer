@@ -17,7 +17,7 @@ public static class LoggerConfigurator
             .MinimumLevel.Verbose()
             .WriteTo.Console(outputTemplate: consoleOutputTemplate)
             .WriteTo.File(
-                path: $"{logFilePath}\\sync-.log",
+                path: $@"{logFilePath}\sync-.log",
                 outputTemplate: fileOutputTemplate,
                 restrictedToMinimumLevel: LogEventLevel.Information,
                 rollingInterval: RollingInterval.Day,
