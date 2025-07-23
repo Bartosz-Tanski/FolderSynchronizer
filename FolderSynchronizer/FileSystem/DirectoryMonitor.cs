@@ -16,17 +16,17 @@ public class DirectoryMonitor : IDirectoryMonitor
 
     public void Monitor(string sourcePath, string replicaPath)
     {
+        if (!_contentInspector.DoesReplicaDirectoryExist(replicaPath))
+        {
+            _contentManager.CreateDirectory(replicaPath);
+        }
+
         var sourceDirectories = ReloadDirectories(sourcePath);
         var replicaDirectories = ReloadDirectories(replicaPath);
 
         var sourceFiles = ReloadFiles(sourcePath);
         var replicaFiles = ReloadFiles(replicaPath);
         
-        if (!_contentInspector.DoesReplicaDirectoryExist(replicaPath))
-        {
-            _contentManager.CreateDirectory(replicaPath);
-        }
-
         if (!_contentInspector.HasSameCount(sourceDirectories, replicaDirectories))
         {
             _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
