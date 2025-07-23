@@ -9,8 +9,7 @@ public static class Program
     public static void Main(string[] args)
     {
         var userInterface = new ConsoleUserInterface();
-        var contentManager = new ContentManager();
-        var monitor = new DirectoryMonitor(contentManager, userInterface, new ContentInspector(contentManager));
+        var monitor = new DirectoryMonitor(new ContentManager(), userInterface, new ContentInspector());
         
         var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator(), userInterface);
 
