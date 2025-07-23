@@ -8,7 +8,7 @@ public static class LoggerConfigurator
     public static void Configure(string logFilePath)
     {
         const string fileOutputTemplate =
-            "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}{NewLine}";
+            "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
         
         const string consoleOutputTemplate =
             "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}";
