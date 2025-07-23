@@ -11,7 +11,7 @@ public static class Program
         var userInterface = new ConsoleUserInterface();
         var monitor = new DirectoryMonitor(new ContentManager(), userInterface, new ContentInspector());
         
-        var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator(), userInterface);
+        var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator());
 
         try
         {
@@ -19,7 +19,7 @@ public static class Program
         }
         catch (Exception ex)
         {
-            userInterface.DisplayMessage(ex.Message, ConsoleColor.DarkRed);
+            userInterface.DisplayMessage(ex.Message, ConsoleColor.Red);
             userInterface.DisplayHelpMessage();
         }
     }
