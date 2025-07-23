@@ -24,15 +24,15 @@ public class DirectorySynchronizerApp
         var sourceDirectory = args[0];
         var replicaDirectory = args[1];
         var interval = int.Parse(args[2]);
-        var logFilePath = args[3];
+        var logPath = args[3];
         
-        LoggerConfigurator.Configure(logFilePath);
+        LoggerConfigurator.Configure(logPath);
         
         Log.Verbose("Press CTRL + C to stop synchronization...");
-        BeginSynchronization(sourceDirectory, replicaDirectory, interval, logFilePath);
+        BeginSynchronization(sourceDirectory, replicaDirectory, interval);
     }
 
-    private void BeginSynchronization(string sourceDirectory, string replicaDirectory, int interval, string logFilePath)
+    private void BeginSynchronization(string sourceDirectory, string replicaDirectory, int interval)
     {
         var cancellationToken = new CancellationTokenSource();
         

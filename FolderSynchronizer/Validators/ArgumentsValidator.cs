@@ -51,9 +51,9 @@ public class ArgumentsValidator : IArgumentsValidator
     
     private void ValidateLogFileArgument(string arg)
     {
-        if (!File.Exists(arg))
+        if (!Directory.Exists(arg))
         {
-            throw new FileNotFoundException($"Log file: {arg} doesn't exist.");
+            throw new FileNotFoundException($"Log dircetory: {arg} doesn't exist.");
         }
     }
 }
