@@ -6,124 +6,75 @@ namespace FolderSynchronizer.FileSystem;
 
 public class ContentInspector : IContentInspector
 {
-    private readonly IContentManager _contentManager;
-
-    public ContentInspector(IContentManager contentManager)
-    {
-        _contentManager = contentManager;
-    }
-
     public bool DoesReplicaDirectoryExist(string replicaPath)
     {
         return Directory.Exists(replicaPath);
     }
     
-    public bool HasSameDirectoryCount(string sourcePath, string replicaPath)
+    public bool HasSameCount(string[] sourceContent, string[] replicaContent)
     {
-        var sourceDirectories = _contentManager.GetAllDirectoriesPaths(sourcePath);
-        var replicaDirectories = _contentManager.GetAllDirectoriesPaths(replicaPath);
-    
-        return sourceDirectories.Length == replicaDirectories.Length;
+        return sourceContent.Length == replicaContent.Length;
     }
-    
-    public bool HasSameFileCount(string sourcePath, string replicaPath)
-    {
-        var sourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
-        var replicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
-    
-        return sourceFiles.Length == replicaFiles.Length;
-    }
-    
-    public bool HasSameContentSizes(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
+
+    public bool HasSameFileSizes(string[] sourceFiles, string[] replicaFiles, out List<string> notValidReplicaFiles)
     {
         var result = true;
-        
-        var allSourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
-        var allReplicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
 
         notValidReplicaFiles = [];
 
-        for (int i = 0; i < allSourceFiles.Length; i++)
+        for (int i = 0; i < sourceFiles.Length; i++)
         {
-            var sourceFileInfo = new FileInfo(allSourceFiles[i]);
-            var replicaFileInfo = new FileInfo(allReplicaFiles[i]);
+            var sourceFileInfo = new FileInfo(sourceFiles[i]);
+            var replicaFileInfo = new FileInfo(replicaFiles[i]);
 
             if (sourceFileInfo.Length != replicaFileInfo.Length)
             {
-                notValidReplicaFiles.Add(allReplicaFiles[i]);
+                notValidReplicaFiles.Add(replicaFiles[i]);
                 result = false;
             }
         }
 
         return result;
-    }
-
-    public bool HasSameFilesNames(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
-    {
-        var result = true;
-        
-        var allSourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
-        var allReplicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
-
-        notValidReplicaFiles = [];
-
-        if (allSourceFiles.Length != allReplicaFiles.Length)
-            return false;
-
-        for (int i = 0; i < allSourceFiles.Length; i++)
-        {
-            var sourceFileInfo = new FileInfo(allSourceFiles[i]);
-            var replicaFileInfo = new FileInfo(allReplicaFiles[i]);
-
-            if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
-            {
-                notValidReplicaFiles.Add(allReplicaFiles[i]);
-                result = false;
-            }
-        }
-
-        return result;
-    }
-
-    public bool HasSameDirectoriesNames(string sourcePath, string replicaPath)
-    {
-        var allSourceFiles = _contentManager.GetAllDirectoriesPaths(sourcePath);
-        var allReplicaFiles = _contentManager.GetAllDirectoriesPaths(replicaPath);
-
-        for (int i = 0; i < allSourceFiles.Length; i++)
-        {
-            var sourceFileInfo = new DirectoryInfo(allSourceFiles[i]);
-            var replicaFileInfo = new DirectoryInfo(allReplicaFiles[i]);
-
-            if (sourceFileInfo.Name.Length != replicaFileInfo.Name.Length)
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
     
-    public bool IsContentIntegral(string sourcePath, string replicaPath, out List<string> notValidReplicaFiles)
+    public bool HasSameNames(string[] sourceContent, string[] replicaContent, out List<string> notValidReplicaFiles)
+    {
+        notValidReplicaFiles = [];
+
+        var result = true;
+        
+        for (int i = 0; i < sourceContent.Length; i++)
+        {
+            var sourceName = Path.GetFileName(sourceContent[i]);
+            var replicaName = Path.GetFileName(replicaContent[i]);
+
+            if (sourceName.Length != replicaName.Length)
+            {
+                notValidReplicaFiles.Add(replicaContent[i]);
+                result = false;
+            }
+        }
+
+        return result;
+    }
+    
+    public bool IsContentIntegral(string[] sourceFiles, string[] replicaFiles, out List<string> notValidReplicaFiles)
     {
         var result = true;
         
-        var allSourceFiles = _contentManager.GetAllFilesPaths(sourcePath);
-        var allReplicaFiles = _contentManager.GetAllFilesPaths(replicaPath);
-        
         notValidReplicaFiles = [];
         
-        for (int i = 0; i < allSourceFiles.Length; i++)
+        for (int i = 0; i < sourceFiles.Length; i++)
         {
-            if (allSourceFiles.Length != allReplicaFiles.Length)
+            if (sourceFiles.Length != replicaFiles.Length)
                 continue;
             
-            var sourceFileHash = ComputeMd5(allSourceFiles[i]);
-            var replicaFileHash = ComputeMd5(allReplicaFiles[i]);
+            var sourceFileHash = ComputeMd5(sourceFiles[i]);
+            var replicaFileHash = ComputeMd5(replicaFiles[i]);
         
             if (!string.Equals(sourceFileHash, replicaFileHash))
             {
-                notValidReplicaFiles.Add(allReplicaFiles[i]);
+                notValidReplicaFiles.Add(replicaFiles[i]);
                 result = false;
             }
         }
