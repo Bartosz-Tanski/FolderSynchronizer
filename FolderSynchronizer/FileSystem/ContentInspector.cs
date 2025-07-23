@@ -45,6 +45,9 @@ public class ContentInspector : IContentInspector
         
         for (int i = 0; i < sourceContent.Length; i++)
         {
+            if (sourceContent.Length != replicaContent.Length)
+                continue;
+            
             var sourceName = Path.GetFileName(sourceContent[i]);
             var replicaName = Path.GetFileName(replicaContent[i]);
 

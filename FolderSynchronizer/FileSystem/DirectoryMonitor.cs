@@ -58,6 +58,8 @@ public class DirectoryMonitor : IDirectoryMonitor
         if (!_contentInspector.HasSameNames(sourceDirectories, replicaDirectories, out _))
         {
             _contentManager.RemoveDirectories(sourcePath, replicaPath);
+            sourceFiles = ReloadFiles(sourcePath);
+            replicaFiles = ReloadFiles(replicaPath);
         }
 
         if (!_contentInspector.IsContentIntegral(sourceFiles, replicaFiles, out var notValidReplicaFiles))
