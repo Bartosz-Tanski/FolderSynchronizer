@@ -23,7 +23,5 @@ public class ConsoleUserInterface : IUserInterface
         Console.WriteLine("    <ReplicaDir> - Path to the replica directory. All files and subfolders will mirror the source.");
         Console.WriteLine("    <Interval>   - Synchronization interval in seconds. Must be a positive integer (e.g. 30).");
         Console.WriteLine("    <LogPath>    - Path to the directory where synchronization logs will be stored.");
-
-        Console.WriteLine();
     }
 }
