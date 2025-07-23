@@ -55,7 +55,7 @@ public class ContentManager : IContentManager
 
     private static string GetTargetPath(string sourcePath, string replicaPath, string content)
     {
-        var relativePath = Path.GetRelativePath(sourcePath, content!);
+        var relativePath = Path.GetRelativePath(sourcePath, content);
         var targetDirectoryPath = Path.Combine(replicaPath, relativePath);
 
         return targetDirectoryPath;
@@ -68,27 +68,18 @@ public class ContentManager : IContentManager
             CopyMissingFiles(sourcePath, replicaPath);
             return;
         }
-
-        RemoveExcessFiles(sourcePath, replicaPath);
+        
+        RemoveFiles(GetMissingContent(replicaPath, sourcePath, GetAllFilesPaths));
     }
 
     private void CopyMissingFiles(string sourcePath, string replicaPath)
     {
         foreach (var file in GetMissingContent(sourcePath, replicaPath, GetAllFilesPaths))
         {
-            var targetFilePath = GetTargetPath(sourcePath, replicaPath, file!);
+            var targetFilePath = GetTargetPath(sourcePath, replicaPath, file);
 
             Log.Information($"Copy: {file}, to: {targetFilePath}");
-            File.Copy(file!, targetFilePath);
-        }
-    }
-
-    private void RemoveExcessFiles(string sourcePath, string replicaPath)
-    {
-        foreach (var file in GetMissingContent(replicaPath, sourcePath, GetAllFilesPaths))
-        {
-            Log.Information("Delete: " + file!);
-            File.Delete(file!);
+            File.Copy(file, targetFilePath);
         }
     }
 
@@ -107,7 +98,7 @@ public class ContentManager : IContentManager
     {
         foreach (var directory in GetMissingContent(sourcePath, replicaPath, GetAllDirectoriesPaths))
         {
-            var targetDirectoryPath = GetTargetPath(sourcePath, replicaPath, directory!);
+            var targetDirectoryPath = GetTargetPath(sourcePath, replicaPath, directory);
 
             CreateDirectory(targetDirectoryPath);
         }
