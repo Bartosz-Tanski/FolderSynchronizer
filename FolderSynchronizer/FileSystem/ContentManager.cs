@@ -1,4 +1,5 @@
 ﻿using FolderSynchronizer.Abstractions;
+using Serilog;
 
 namespace FolderSynchronizer.FileSystem;
 
@@ -77,7 +78,7 @@ public class ContentManager : IContentManager
         {
             var targetFilePath = GetTargetPath(sourcePath, replicaPath, file!);
 
-            Console.WriteLine($"Create: {targetFilePath}");
+            Log.Information($"Copy: {file}, to: {targetFilePath}");
             File.Copy(file!, targetFilePath);
         }
     }
@@ -86,7 +87,7 @@ public class ContentManager : IContentManager
     {
         foreach (var file in GetMissingContent(replicaPath, sourcePath, GetAllFilesPaths))
         {
-            Console.WriteLine("Delete: " + file!); // TODO: Add real logging
+            Log.Information("Delete: " + file!);
             File.Delete(file!);
         }
     }
@@ -123,7 +124,7 @@ public class ContentManager : IContentManager
     
             if (Directory.Exists(directory))
             {
-                Console.WriteLine("Remove directory: " + directory);
+                Log.Information("Delete directory: " + directory);
                 Directory.Delete(directory);
             }
         }
@@ -133,14 +134,14 @@ public class ContentManager : IContentManager
     {
         foreach (var file in filesToRemove)
         {
-            Console.WriteLine("Remove file: " + file);
+            Log.Information("Delete file: " + file);
             File.Delete(file);
         }
     }
 
     public void CreateDirectory(string path)
     {
-        Console.WriteLine("Create: " + path);
+        Log.Information("Create: " + path);
         Directory.CreateDirectory(path);
     }
 }
