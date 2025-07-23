@@ -6,14 +6,11 @@ public class DirectoryMonitor : IDirectoryMonitor
 {
     private readonly IContentManager _contentManager;
     private readonly IContentInspector _contentInspector;
-    private readonly IUserInterface _userInterface;
 
     public DirectoryMonitor(IContentManager contentManager,
-        IUserInterface userInterface,
         IContentInspector contentInspector)
     {
         _contentManager = contentManager;
-        _userInterface = userInterface;
         _contentInspector = contentInspector;
     }
 
@@ -70,9 +67,6 @@ public class DirectoryMonitor : IDirectoryMonitor
         
         _contentManager.EqualizeDirectoryCount(sourcePath, replicaPath);
         _contentManager.EqualizeFileCount(sourcePath, replicaPath);
-
-        
-        _userInterface.DisplayMessage("Directories are synchronized", ConsoleColor.DarkGreen);
     }
 
     private string[] ReloadFiles(string path) => _contentManager.GetAllFilesPaths(path);
