@@ -19,10 +19,10 @@ public class ConsoleUserInterface : IUserInterface
     {
         Console.WriteLine("Usage: FolderSynchronizer.exe <SourceDir> <ReplicaDir> <Interval> <LogPath>");
         Console.WriteLine("  Where:");
-        Console.WriteLine("    <SourceDir>  - Path to source directory");
-        Console.WriteLine("    <ReplicaDir> - Path to replica directory. All files will be the same as in source");
-        Console.WriteLine("    <Interval>   - Must be a number. Synchronization interval in seconds");
-        Console.WriteLine("    <LogPath>    - Path to directory where logs should be stored");
+        Console.WriteLine("    <SourceDir>  - Path to the source directory whose contents you want to replicate.");
+        Console.WriteLine("    <ReplicaDir> - Path to the replica directory. All files and subfolders will mirror the source.");
+        Console.WriteLine("    <Interval>   - Synchronization interval in seconds. Must be a positive integer (e.g. 30).");
+        Console.WriteLine("    <LogPath>    - Path to the directory where synchronization logs will be stored.");
 
         Console.WriteLine();
     }

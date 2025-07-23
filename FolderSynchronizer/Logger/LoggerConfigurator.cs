@@ -16,7 +16,13 @@ public static class LoggerConfigurator
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
             .WriteTo.Console(outputTemplate: consoleOutputTemplate)
-            .WriteTo.File(logFilePath, restrictedToMinimumLevel: LogEventLevel.Information, outputTemplate: fileOutputTemplate)
+            .WriteTo.File(
+                path: $"{logFilePath}\\sync-.log",
+                outputTemplate: fileOutputTemplate,
+                restrictedToMinimumLevel: LogEventLevel.Information,
+                rollingInterval: RollingInterval.Day,
+                rollOnFileSizeLimit: true,
+                retainedFileCountLimit: 30) // Keep files for month to prevent overusing disc free space
             .CreateLogger();
     }
 }
