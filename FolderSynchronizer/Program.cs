@@ -8,9 +8,7 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var userInterface = new ConsoleUserInterface();
-        var monitor = new DirectoryMonitor(new ContentManager(), userInterface, new ContentInspector());
-        
+        var monitor = new DirectoryMonitor(new ContentManager(), new ContentInspector());
         var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator());
 
         try
@@ -19,6 +17,7 @@ public static class Program
         }
         catch (Exception ex)
         {
+            var userInterface = new ConsoleUserInterface();
             userInterface.DisplayMessage(ex.Message, ConsoleColor.Red);
             userInterface.DisplayHelpMessage();
         }
