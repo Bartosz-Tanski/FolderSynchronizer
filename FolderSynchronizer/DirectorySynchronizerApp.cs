@@ -23,7 +23,7 @@ public class DirectorySynchronizerApp
 
         var sourceDirectory = args[0];
         var replicaDirectory = args[1];
-        var interval = int.Parse(args[2]);
+        var interval = uint.Parse(args[2]);
         var logPath = args[3];
         
         LoggerConfigurator.Configure(logPath);
@@ -32,7 +32,7 @@ public class DirectorySynchronizerApp
         BeginSynchronization(sourceDirectory, replicaDirectory, interval);
     }
 
-    private void BeginSynchronization(string sourceDirectory, string replicaDirectory, int interval)
+    private void BeginSynchronization(string sourceDirectory, string replicaDirectory, uint interval)
     {
         var cancellationToken = new CancellationTokenSource();
         

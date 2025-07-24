@@ -46,9 +46,9 @@ public class ArgumentsValidator : IArgumentsValidator
     
     private void ValidateIntervalArgument(string arg)
     {
-        if (!int.TryParse(arg, out _))
+        if (!uint.TryParse(arg, out _))
         {
-            throw new FormatException($"<Interval> argument: {arg} is in wrong format.");
+            throw new FormatException($"<Interval> argument: {arg} must be a positive integer.");
         }
     }
     
