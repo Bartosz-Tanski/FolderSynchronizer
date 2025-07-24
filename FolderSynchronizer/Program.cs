@@ -8,8 +8,10 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var monitor = new DirectoryMonitor(new ContentManager(), new ContentInspector());
-        var app = new DirectorySynchronizerApp(monitor, new ArgumentsValidator());
+        var app = new DirectorySynchronizerApp(
+            new DirectoryMonitor(new ContentManager(), new ContentInspector()),
+            new ArgumentsValidator()
+        );
 
         try
         {
@@ -20,7 +22,7 @@ public static class Program
             var userInterface = new ConsoleUserInterface();
             userInterface.DisplayMessage(ex.Message, ConsoleColor.Red);
             userInterface.DisplayHelpMessage();
-            
+
             Environment.Exit(1);
         }
     }
