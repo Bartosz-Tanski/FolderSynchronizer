@@ -2,7 +2,7 @@
 
 namespace FolderSynchronizer.UserInteraction;
 
-public class ConsoleUserInterface : IUserInterface
+public class ConsoleUserInterface
 {
     public void DisplayMessage(string message, ConsoleColor? color = null)
     {
