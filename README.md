@@ -33,7 +33,7 @@ FolderSynchronizer.exe <SourceDir> <ReplicaDir> <Interval> <LogPath>
 ## Logging
 
 * Logs are written as plain text files in the specified `<LogPath>` directory.
-* Each run appends to the log file named with the current date (e.g., `sync-20250723.log`).
+* Each run appends to the log file named with the current date (e.g. `sync-20250723.log`).
 * Log entries include timestamps, operation types (create, update, delete), and file paths.
 * The folder retains only the most recent 30 log files to reduce disk usage. Older log files are automatically deleted.
 * If a daily log file exceeds a certain size, it is split into multiple files (e.g. `sync-20250723_001.log`, `sync-20250723_002.log`).
